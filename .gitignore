@@ -213,3 +213,5 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+Database/way-db.mdf
+Database/way-db_log.LDF

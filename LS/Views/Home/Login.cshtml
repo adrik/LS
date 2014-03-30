@@ -1,0 +1,44 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, height=device-height" />
+    <title>Index</title>
+    @Styles.Render("~/Content/css")
+    <script type="text/javascript" src="/Scripts/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#loginModal').modal().children().first().css({
+                marginTop: function () {
+                    return $(window).height() / 2 - $(this).height() - 30;
+                },
+                maxWidth: 190
+            });
+
+            setTimeout(function () {
+                $('#loginContent form').trigger('submit');
+            }, 20);
+        });
+    </script>
+</head>
+<body>
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id="loginContent" class="modal-body">
+                    <img src="/Images/gear.gif" alt="In progress..." />
+                    Identifying...
+                    @using (Html.BeginForm("ExternalLogin", "Account"))
+                    {
+                        @Html.AntiForgeryToken()
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+﻿@model MyMvc.Models.LoginModel
+
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="loginTitle" class="modal-title">Please identify yourself</h4>
+            </div>
+            <div id="loginContent" class="modal-body">
+                <section>
+                    @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
+                </section>
+                <section>
+                @using (Html.BeginForm(new { ReturnUrl = ViewBag.ReturnUrl })) {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+
+                    <fieldset>
+                        <legend>Форма входа</legend>
+                        <ol>
+                            <li>
+                                @Html.LabelFor(m => m.UserName)
+                                @Html.TextBoxFor(m => m.UserName)
+                                @Html.ValidationMessageFor(m => m.UserName)
+                            </li>
+                            <li>
+                                @Html.LabelFor(m => m.Password)
+                                @Html.PasswordFor(m => m.Password)
+                                @Html.ValidationMessageFor(m => m.Password)
+                            </li>
+                            <li>
+                                @Html.CheckBoxFor(m => m.RememberMe)
+                                @Html.LabelFor(m => m.RememberMe)
+                            </li>
+                        </ol>
+                        <input id="submitLogin" class="btn btn-primary" type="submit" value="Выполнить вход" />
+                    </fieldset>
+                }
+                </section>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#submitLogin').click(function (e) {
+            e.preventDefault();
+            message('Working...', '#50d0c0');
+            $.ajax({
+                type: 'POST',
+                url: '/account/login',
+                data: { UserName: $('#UserName').val(), Password: $('#Password').val(), RememberMe: $('#RememberMe').prop('checked'), __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() },
+                success: function (result) {
+                    if (result.success) {
+                        message('Welcome!', '#c0ffc0');
+                        $('#loginModal').modal('hide');
+                        authComplete();
+                    } else {
+                        //alert(result.message);
+                        //$('#loginContent').load('/account/login');
+                        message('Oops! Wrong credentials', '#f0c0c0');
+                    }
+                },
+                error: function () {
+                    $('#loginContent').load('/account/login', { message: 'Something went wrong!' });
+                }
+            });
+        });
+        //$('.modal-content').animate({ 'backgroundPosition': 1000 }, 10000);
+        $('#loginModal').modal('show');
+    });
+
+    function message(text, color) {
+        $('#loginTitle').css('backgroundColor', color).text(text);
+    }
+</script>

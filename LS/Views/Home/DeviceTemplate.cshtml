@@ -1,0 +1,8 @@
+﻿<div ng-repeat="device in devices"
+    ng-class="'portrait' + (device.hidden ? ' disabled' : '')" 
+    ng-attr-style="background-image: url(/thumbnail/load/{{device.uid}})" 
+    ng-click="device.clickPortrait()"
+    data-container="body" data-placement="top" data-trigger="hover" data-toggle="popover" data-content="asdasd">
+    <div class="title">{{device.uname}}</div>
+    <div class="toggle" title="Toggle visibility" ng-click="device.toggle()"></div>
+</div>

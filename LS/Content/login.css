@@ -1,0 +1,16 @@
+﻿.modal-content
+{
+    background-image: url(/images/caution-1.jpg);
+    background-repeat: repeat-x;
+    background-color: #ffffff;   
+}
+.modal-body
+{
+    background-color: #ffffff;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.modal-dialog
+{
+    padding-top: 0px !important;
+}

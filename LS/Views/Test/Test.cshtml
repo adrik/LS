@@ -1,0 +1,50 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Test</title>
+    <script type="text/javascript" src="/Scripts/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#testSrv').click(function () {
+                $.ajax(
+                {
+                    type: 'POST',
+                    url: '/Services/Android.svc/Process?id=im.adrenaline',
+                    data: '[{ "Id": 5, "Type": 1, "Content": "pasha" }, { "Id": 3, "Content": "all", "Type": 2 }, { "Id": -1, "Type": 3 }]',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    processData: false,
+                    success: function (data, status, xhr) {
+                        console.log(data);
+                        //alert(data.test);
+                    },
+                    error: function (xhr, status, msg) {
+                        alert(status + ': ' + msg);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    @*<div>
+        Min: @ViewBag.Min<br />
+        Max: @ViewBag.Max<br />
+        Rnd: @ViewBag.Rnd<br />
+
+        @foreach (string s in ViewBag.Num)
+        {
+            <p>@s</p>
+        }
+    </div>*@
+    <div>
+        <button id="testSrv">test post service</button>
+    </div>
+</body>
+</html>

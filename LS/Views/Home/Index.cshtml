@@ -27,6 +27,43 @@
             </device-list>
         </div>
         <div id="background"></div>
+
+        <style type="text/css">
+            #marker
+            {
+                position: absolute; 
+                left: 200px; 
+                top: 300px;
+                width: 54px;
+            }
+            .marker .face 
+            {
+                background-image: url(/thumbnail/load/19);
+                width: 54px;
+                height: 54px;
+                background-repeat: no-repeat; 
+                background-position: center center;
+                cursor: pointer;
+                border: 2px solid #fb9114;
+                border-radius: 3px;
+                box-shadow: 1px 1px 3px #a0a0b0;
+            }
+            .marker .arrow 
+            {
+                width: 10px;
+                height: 10px;
+                border-top: 10px solid #fb9114;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                position: relative;
+                left: 22px;
+                
+            }
+        </style>
+        <div id="marker" class="marker">
+            <div class="face"></div>
+            <div class="arrow"></div>
+        </div>
     </div>
 </body>
 </html>

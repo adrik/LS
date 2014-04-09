@@ -38,7 +38,7 @@ namespace MyMvc.Services
             string contactLogin;
 
             if (UserFunctions.Connect(login, code, out contactLogin))
-                MsgProcessor.SaveMessageForUser(contactLogin, new QueuedMessage() { Content = login, Type = MessageType.RequestClientConnect });
+                MsgProcessor.SaveMessageForUser(contactLogin, new QueuedMessage() { Content = FormatUserInfo(login), Type = QueuedMessageType.RequestClientConnect });
 
             if (contactLogin == null)
                 return null;
@@ -54,7 +54,7 @@ namespace MyMvc.Services
             string login = GetLogin(id);
 
             if (UserFunctions.Disconnect(login, other))
-                MsgProcessor.SaveMessageForUser(other, new QueuedMessage() { Content = login, Type = MessageType.RequestClientDisconnect });
+                MsgProcessor.SaveMessageForUser(other, new QueuedMessage() { Content = login, Type = QueuedMessageType.RequestClientDisconnect });
         }
 
         public void UpdateLocation(string id, double lat, double lng)
@@ -83,6 +83,16 @@ namespace MyMvc.Services
         private string GetLogin(string id)
         {
             return id;
+        }
+
+        private string FormatUserInfo(string login)
+        {
+            var details =
+                    UserFunctions.SelectUser(
+                        login,
+                        x => new UserLocation { id = x.User.Login, lat = x.Location.Lat, lng = x.Location.Lng }).FirstOrDefault();
+
+            return string.Format("{0}|{1}|{2}", details.id, details.lat, details.lng);
         }
     }
 }

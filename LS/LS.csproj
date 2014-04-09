@@ -185,13 +185,14 @@
     <Compile Include="Models\MessageProcessing\IMsgProcessor.cs" />
     <Compile Include="Models\MessageProcessing\MsgProcessor.cs" />
     <Compile Include="Models\MessageProcessing\UpdateLocationMsgProcessor.cs" />
-    <Compile Include="Models\MessageType.cs" />
+    <Compile Include="Models\QueuedMessageType.cs" />
     <Compile Include="Models\MyMembershipProvider.cs" />
     <Compile Include="Models\DB\DbRelation.cs" />
     <Compile Include="Models\DB\DbThumbnail.cs" />
     <Compile Include="Models\DB\DbUser.cs" />
     <Compile Include="Models\DB\DbLocation.cs" />
     <Compile Include="Models\DB\DbDevice.cs" />
+    <Compile Include="Models\ResponseStatus.cs" />
     <Compile Include="Models\UserFunctions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Android.svc.cs">

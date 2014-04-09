@@ -8,6 +8,8 @@ namespace MyMvc.Models.MessageProcessing
     {
         private const string FormatExceptionMessage = "Incorrect Lat Lng format! Should be: {lat},{lng}";
 
+        public bool CanProcessNewLogin { get { return false; } }
+
         public MessageResponse[] Process(string login, QueuedMessage msg)
         {
             try

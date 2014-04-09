@@ -8,39 +8,48 @@ namespace MyMvc.Models.MessageProcessing
 {
     public static class MsgProcessor
     {
+        private static object msgLock = new object();
         private static UpdateLocationMsgProcessor _updateLocationMP = new UpdateLocationMsgProcessor();
         private static ServerConnectMsgProcessor _serverConnectMP = new ServerConnectMsgProcessor();
         private static ServerDisconnectMsgProcessor _serverDisconnectMP = new ServerDisconnectMsgProcessor();
         private static ContactLocationsMsgProcessor _contactLocationsMP = new ContactLocationsMsgProcessor();
         private static CodeMsgProcessor _codeMP = new CodeMsgProcessor();
 
-        private static IMsgProcessor GetProcessor(MessageType type)
+        private static IMsgProcessor GetProcessor(QueuedMessageType type)
         {
             switch (type)
             {
-                case MessageType.RequestUpdateLocation:
+                case QueuedMessageType.RequestUpdateLocation:
                     return _updateLocationMP;
-                case MessageType.RequestServerConnect:
+                case QueuedMessageType.RequestServerConnect:
                     return _serverConnectMP;
-                case MessageType.RequestServerDisconnect:
+                case QueuedMessageType.RequestServerDisconnect:
                     return _serverDisconnectMP;
-                case MessageType.RequestCode:
+                case QueuedMessageType.RequestCode:
                     return _codeMP;
-                case MessageType.RequestContactLocations:
+                case QueuedMessageType.RequestContactLocations:
                     return _contactLocationsMP;
                 default:
                     throw new ArgumentException();
             }
         }
 
-        public static MessageResponse[] Process(string login, QueuedMessage msg)
+        private static MessageResponse[] Process(string login, QueuedMessage msg, bool userExists)
         {
-            return GetProcessor(msg.Type).Process(login, msg);
+            IMsgProcessor processor = GetProcessor(msg.Type);
+
+            if (userExists || processor.CanProcessNewLogin)
+                return processor.Process(login, msg);
+            else
+                return new[] { MessageResponse.Error(msg.Id, "User is not registered") };
         }
 
         public static MessageResponse[] Process(string login, QueuedMessage[] messages)
         {
-            return messages.SelectMany(x => Process(login, x)).ToArray();
+            var db = DB.ModelContext.Instance;
+            var user = db.FindUserByLogin(login);
+
+            return messages.SelectMany(x => Process(login, x, user != null)).ToArray();
         }
 
         public static void SaveMessageForUser(string login, QueuedMessage msg)
@@ -48,7 +57,8 @@ namespace MyMvc.Models.MessageProcessing
             var db = Models.DB.ModelContext.Instance;
             var user = db.FindUserByLogin(login);
 
-            db.UserMessages.Add(new DB.DbUserMessage() { UserId = user.Id, Type = msg.Type, Content = msg.Content });
+            db.UserMessages.Add(new DB.DbUserMessage() { UserId = user.Id, Type = (int)msg.Type, Content = msg.Content });
+            db.SaveChanges();
         }
 
         public static QueuedMessage[] GetUserMessages(string login)
@@ -56,12 +66,23 @@ namespace MyMvc.Models.MessageProcessing
             var db = Models.DB.ModelContext.Instance;
             var user = db.FindUserByLogin(login);
 
-            DB.DbUserMessage[] messages = db.UserMessages.Where(x => x.UserId == user.Id).ToArray();
-            foreach (var msg in messages)
-                db.UserMessages.Remove(msg);
-            db.SaveChanges();
+            if (user == null || !db.UserMessages.Any(x => x.UserId == user.Id))
+                return new QueuedMessage[] { };
+            else
+            {
+                DB.DbUserMessage[] messages = null;
 
-            return messages.Select(x => new QueuedMessage() { Id = x.Id, Content = x.Content, Type = x.Type }).ToArray();
+                lock (msgLock)
+                {
+                    messages = db.UserMessages.Where(x => x.UserId == user.Id).ToArray();
+                    foreach (var msg in messages)
+                        db.UserMessages.Remove(msg);
+                    db.SaveChanges();
+                    // DbUpdateConcurrencyException
+                }
+
+                return messages.Select(x => new QueuedMessage() { Id = x.Id, Content = x.Content, Type = (QueuedMessageType)x.Type }).ToArray();
+            }
         }
     }
 }

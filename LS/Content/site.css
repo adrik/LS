@@ -21,8 +21,8 @@ body { margin: 0px; overflow: hidden; }
     position: absolute; 
     bottom: 17px;
     width: 100%;
-    background-color: #e0e0ff;
-    opacity: 0.35;
+    background-color: #fb9114;
+    opacity: 0.25;
     z-index: 5;
 }
 .portrait  
@@ -34,16 +34,16 @@ body { margin: 0px; overflow: hidden; }
     display: inline-block;
     margin: 0px 3px 0px 3px; 
     cursor: pointer;
-    border: 2px solid #e0e0ff;
+    border: 2px solid #fb9114;
     border-radius: 3px;
 
-    background-color: #e0e0ff;
+    background-color: #fb9114;
     box-shadow: 2px 2px 5px #a0a0b0;
 }
 .portrait:hover
 {
-    border-color: #90b9ff;
-    background-color: #90b9ff;
+    border-color: #fddf15;
+    background-color: #fddf15;
 }
 .portrait .title {
     overflow: hidden; 

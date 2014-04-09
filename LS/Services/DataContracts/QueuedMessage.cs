@@ -10,7 +10,7 @@ namespace MyMvc.Services.DataContracts
         public int Id { get; set; }
 
         [DataMember]
-        public MessageType Type { get; set; }
+        public QueuedMessageType Type { get; set; }
 
         [DataMember]
         public string Content { get; set; }

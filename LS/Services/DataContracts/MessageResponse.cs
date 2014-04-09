@@ -1,13 +1,8 @@
 ﻿using System.Runtime.Serialization;
+using MyMvc.Models;
 
 namespace MyMvc.Services.DataContracts
 {
-    public enum MessageResponseStatus
-    {
-        OK = 1,
-        Error = 2
-    }
-
     public class MessageResponse
     {
         public static MessageResponse OK(int id)

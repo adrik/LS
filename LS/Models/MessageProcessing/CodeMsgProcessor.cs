@@ -4,6 +4,8 @@ namespace MyMvc.Models.MessageProcessing
 {
     public class CodeMsgProcessor : IMsgProcessor
     {
+        public bool CanProcessNewLogin { get { return true; } }
+
         public MessageResponse[] Process(string login, QueuedMessage msg)
         {
             string code = CodeGen.Next();

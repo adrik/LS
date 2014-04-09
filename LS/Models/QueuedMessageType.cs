@@ -5,7 +5,7 @@ using System.Web;
 
 namespace MyMvc.Models
 {
-    public enum MessageType
+    public enum QueuedMessageType
     {
         RequestCode = 0,
         RequestUpdateLocation = 1,
@@ -13,8 +13,6 @@ namespace MyMvc.Models
         RequestServerConnect = 4,
         RequestClientConnect = 5,
         RequestServerDisconnect = 2,
-        RequestClientDisconnect = 6,
-        ResponseOK = 10,
-        ResponseError = 11
+        RequestClientDisconnect = 6
     }
 }

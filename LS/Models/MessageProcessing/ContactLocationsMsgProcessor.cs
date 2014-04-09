@@ -7,6 +7,8 @@ namespace MyMvc.Models.MessageProcessing
 {
     public class ContactLocationsMsgProcessor : IMsgProcessor
     {
+        public bool CanProcessNewLogin { get { return false; } }
+
         public MessageResponse[] Process(string login, QueuedMessage msg)
         {
             var details =

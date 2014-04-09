@@ -144,7 +144,7 @@ namespace MyMvc.Models
         {
             var db = ModelContext.Instance;
 
-            var user = new DbUser() { Login = login, Name = login, Code = code };
+            var user = new DbUser() { Login = login, Name = login, Code = code, PasswordHash = string.Empty };
             db.Users.Add(user);
             db.SaveChanges();
             var device = new DbDevice() { DeviceKey = login, Name = login + " device", Status = 1, UserId = user.Id };

@@ -9,11 +9,13 @@ namespace MyMvc.Models.MessageProcessing
     {
         private const string NonexistentUserMessage = "The user does not exist";
 
+        public bool CanProcessNewLogin { get { return false; } }
+
         public MessageResponse[] Process(string login, QueuedMessage msg)
         {
             int test;
 
-            if (int.TryParse(msg.Content, out test) && test > 0 && test < 7)
+            if (int.TryParse(msg.Content, out test))
             {
                 msg.Content = UserFunctions.SelectUser(test, x => x.User.Code).FirstOrDefault();
             }
@@ -21,21 +23,22 @@ namespace MyMvc.Models.MessageProcessing
             string contactLogin;
 
             if (UserFunctions.Connect(login, msg.Content, out contactLogin))
-                MsgProcessor.SaveMessageForUser(contactLogin, new QueuedMessage() { Content = login, Type = MessageType.RequestClientConnect });
+                MsgProcessor.SaveMessageForUser(contactLogin, new QueuedMessage() { Content = FormatUserInfo(login), Type = QueuedMessageType.RequestClientConnect });
 
             if (contactLogin == null)
                 return new[] { MessageResponse.Error(msg.Id, NonexistentUserMessage) };
             else
-            {
-                var details =
+                return new[] { new MessageResponse() { Id = msg.Id, Status = MessageResponseStatus.OK, Details = FormatUserInfo(contactLogin) } };
+        }
+
+        private string FormatUserInfo(string login)
+        {
+            var details =
                     UserFunctions.SelectUser(
-                        contactLogin,
+                        login,
                         x => new UserLocation { id = x.User.Login, lat = x.Location.Lat, lng = x.Location.Lng }).FirstOrDefault();
 
-                string detailsStr = string.Format("{0}|{1}|{2}", details.id, details.lat, details.lng);
-
-                return new[] { new MessageResponse() { Id = msg.Id, Status = MessageResponseStatus.OK, Details = detailsStr } };
-            }
+            return string.Format("{0}|{1}|{2}", details.id, details.lat, details.lng);
         }
     }
 }

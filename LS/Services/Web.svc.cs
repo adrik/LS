@@ -66,5 +66,24 @@ namespace MyMvc.Services
                 UserFunctions.UpdateLocation(user.Id, loc.Lat + dlat, loc.Lng + dlng);
             }
         }
+
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        public DeviceLocation[] GetMyLocations()
+        {
+            var db = Models.DB.ModelContext.Instance;
+
+            DateTime yesterday = DateTime.Now.AddDays(-1);
+
+            var query = (
+                from d in db.Devices
+                join u in db.Users on d.UserId equals u.Id
+                join l in db.Locations on d.Id equals l.DeviceId
+                where u.Id == WebSecurity.CurrentUserId && l.Time > yesterday
+                orderby l.Time
+                select new DeviceLocation() { id = d.Id, lat = l.Lat, lng = l.Lng }).ToList();
+
+            return query.ToArray();
+        }
     }
 }

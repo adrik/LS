@@ -20,7 +20,7 @@
                 return promise;
             },
             _invocationFailed: function (data, status) {
-                alert('Request failed with code: ' + status);
+                console.log('Request failed with code: ' + status);
             }
         };
 
@@ -42,6 +42,9 @@
             },
             getAllLocations: function (callback) {
                 return this.ws.invokeMethod('GetAllLocations', {}, callback);
+            },
+            getMyLocations: function (callback) {
+                return this.ws.invokeMethod('GetMyLocations', {}, callback);
             }
         };
 

@@ -30,7 +30,7 @@ namespace MyMvc.Controllers
         public ActionResult CreateUser(string name)
         {
             var db = ModelContext.Instance;
-            var user = new DbUser() { Login = name + "@gmail.com", Name = name };
+            var user = new DbUser() { Login = name + "@gmail.com", Name = name, PasswordHash = string.Empty, Code = string.Empty };
             db.Users.Add(user);
             db.SaveChanges();
             var device = new DbDevice() { DeviceKey = name + "_devKey123", Name = name + " phone", Status = 1, UserId = user.Id };
@@ -38,8 +38,10 @@ namespace MyMvc.Controllers
             db.SaveChanges();
             var location = new DbLocation() { DeviceId = device.Id, Lat = 37.707471, Lng = -122.481077, Time = DateTime.Now };
             db.Locations.Add(location);
-            var relation = new DbRelation() { UserId = 1, ContactId = user.Id, GroupId = 0 };
+            var relation = new DbRelation() { UserId = 19, ContactId = user.Id, GroupId = 0 };
             db.Relations.Add(relation);
+            var relation2 = new DbRelation() { UserId = user.Id, ContactId = 19, GroupId = 0 };
+            db.Relations.Add(relation2);
             db.SaveChanges();
 
             return RedirectToAction("Index");

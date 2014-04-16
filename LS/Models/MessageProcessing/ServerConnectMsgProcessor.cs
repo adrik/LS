@@ -36,9 +36,9 @@ namespace MyMvc.Models.MessageProcessing
             var details =
                     UserFunctions.SelectUser(
                         login,
-                        x => new UserLocation { id = x.User.Login, lat = x.Location.Lat, lng = x.Location.Lng }).FirstOrDefault();
+                        x => new UserLocation { id = x.User.Login, lat = x.Location.Lat, lng = x.Location.Lng, time = x.Location.Time }).FirstOrDefault();
 
-            return string.Format("{0}|{1}|{2}", details.id, details.lat, details.lng);
+            return MsgFormatter.FormatUserLocation(details);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace MyMvc.Models.MessageProcessing
 {
     public class UpdateLocationMsgProcessor : IMsgProcessor
     {
-        private const string FormatExceptionMessage = "Incorrect Lat Lng format! Should be: {lat},{lng}";
+        private const string FormatExceptionMessage = "Incorrect Lat Lng format! Should be: {lat}|{lng}|{time}";
 
         public bool CanProcessNewLogin { get { return false; } }
 
@@ -14,14 +14,9 @@ namespace MyMvc.Models.MessageProcessing
         {
             try
             {
-                double[] latLng = (
-                    from str in msg.Content.Split(',')
-                    select double.Parse(str.Trim())).ToArray();
+                UserLocation location = MsgFormatter.ParseUserLocation(msg.Content);
 
-                if (latLng.Length != 2)
-                    throw new FormatException();
-
-                UserFunctions.UpdateLocation(login, latLng[0], latLng[1]);
+                UserFunctions.UpdateLocation(login, location.lat, location.lng, location.time);
 
                 return new[] { MessageResponse.OK(msg.Id) };
             }

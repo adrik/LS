@@ -39,6 +39,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Services" />
+    <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -180,6 +182,7 @@
     <Compile Include="Models\DB\DbSelection.cs" />
     <Compile Include="Models\MessageProcessing\CodeMsgProcessor.cs" />
     <Compile Include="Models\MessageProcessing\ContactLocationsMsgProcessor.cs" />
+    <Compile Include="Models\MessageProcessing\MsgFormatter.cs" />
     <Compile Include="Models\MessageProcessing\ServerConnectMsgProcessor.cs" />
     <Compile Include="Models\MessageProcessing\ServerDisconnectMsgProcessor.cs" />
     <Compile Include="Models\MessageProcessing\IMsgProcessor.cs" />
@@ -205,6 +208,11 @@
     <Compile Include="Services\IAndroidService.cs" />
     <Compile Include="Services\DataContracts\QueuedMessage.cs" />
     <Compile Include="Services\DataContracts\UserLocation.cs" />
+    <Compile Include="Services\Test\Data.cs" />
+    <Compile Include="Services\Test\ISecure.cs" />
+    <Compile Include="Services\Test\Secure.svc.cs">
+      <DependentUpon>Secure.svc</DependentUpon>
+    </Compile>
     <Compile Include="Services\Web.svc.cs">
       <DependentUpon>Web.svc</DependentUpon>
     </Compile>
@@ -296,6 +304,7 @@
     <Content Include="Scripts\WebService.js" />
     <Content Include="Scripts\Device.js" />
     <Content Include="Services\Android.svc" />
+    <Content Include="Services\Test\Secure.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

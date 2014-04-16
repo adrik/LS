@@ -17,5 +17,8 @@ namespace MyMvc.Services.DataContracts
 
         [DataMember]
         public double lng { get; set; }
+
+        [DataMember]
+        public DateTime time { get; set; }
     }
 }

@@ -14,12 +14,11 @@ namespace MyMvc.Models.MessageProcessing
             var details =
                 UserFunctions.SelectContacts(
                     login,
-                    x => new UserLocation { id = x.User.Login, lat = x.Location.Lat, lng = x.Location.Lng }).ToArray();
+                    x => new UserLocation { id = x.User.Login, lat = x.Location.Lat, lng = x.Location.Lng, time = x.Location.Time }).ToArray();
 
             return (
                 from d in details
-                let detailsStr = string.Format("{0}|{1}|{2}", d.id, d.lat, d.lng)
-                select new MessageResponse() { Id = msg.Id, Status = MessageResponseStatus.OK, Details = detailsStr }).ToArray();
+                select new MessageResponse() { Id = msg.Id, Status = MessageResponseStatus.OK, Details = MsgFormatter.FormatUserLocation(d) }).ToArray();
         }
     }
 }

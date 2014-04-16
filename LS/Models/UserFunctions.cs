@@ -54,19 +54,28 @@ namespace MyMvc.Models
             return SelectAll<T>(ModelContext.Instance.FindUserByLogin(login).Id, selector);
         }
 
-
-        public static void UpdateLocation(int userId, double lat, double lng)
+        #region UpdateLocation overloads
+        public static void UpdateLocation(int userId, double lat, double lng, DateTime time)
         {
             var db = ModelContext.Instance;
 
             DbDevice device = db.Devices.FirstOrDefault(x => x.UserId == userId);
-            db.Locations.Add(new DbLocation() { DeviceId = device.Id, Lat = lat, Lng = lng, Time = DateTime.Now });
+            db.Locations.Add(new DbLocation() { DeviceId = device.Id, Lat = lat, Lng = lng, Time = time });
             db.SaveChanges();
+        }
+        public static void UpdateLocation(int userId, double lat, double lng)
+        {
+            UpdateLocation(userId, lat, lng, DateTime.Now);
+        }
+        public static void UpdateLocation(string login, double lat, double lng, DateTime time)
+        {
+            UpdateLocation(ModelContext.Instance.FindUserByLogin(login).Id, lat, lng, time);
         }
         public static void UpdateLocation(string login, double lat, double lng)
         {
-            UpdateLocation(ModelContext.Instance.FindUserByLogin(login).Id, lat, lng);
+            UpdateLocation(login, lat, lng, DateTime.Now);
         }
+        #endregion
 
         public static void CreateUpdateUserCode(string login, string code)
         {

@@ -4,12 +4,12 @@ using MyMvc.Services.DataContracts;
 
 namespace MyMvc.Services
 {
-    [ServiceContract(Namespace = "octo.users.service", Name = "UserService")]
+    [ServiceContract]
     public interface IAndroidService
     {
         [OperationContract]
         [WebInvoke(Method = "POST", RequestFormat = WebMessageFormat.Json, ResponseFormat = WebMessageFormat.Json, 
-            BodyStyle = WebMessageBodyStyle.Bare, UriTemplate = "process?id={id}")]
-        MessageBag Process(string id, QueuedMessage[] messages);
+            BodyStyle = WebMessageBodyStyle.Bare, UriTemplate = "/process")]
+        ResponseBag Process(RequestBag request);
     }
 }

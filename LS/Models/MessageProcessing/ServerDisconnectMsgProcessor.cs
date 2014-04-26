@@ -13,13 +13,13 @@ namespace MyMvc.Models.MessageProcessing
 
         public MessageResponse[] Process(string login, QueuedMessage msg)
         {
-            string other = msg.Content.Trim();
+            string other = msg.content.Trim();
             bool disconnected = UserFunctions.Disconnect(login, other);
 
             if (disconnected)
-                MsgProcessor.SaveMessageForUser(other, new QueuedMessage() { Content = login, Type = QueuedMessageType.RequestClientDisconnect });
+                MsgProcessor.SaveMessageForUser(other, new QueuedMessage() { content = login, type = QueuedMessageType.RequestClientDisconnect });
 
-            MessageResponse resp = disconnected ? MessageResponse.OK(msg.Id) : MessageResponse.Error(msg.Id, NonexistentUserMessage);
+            MessageResponse resp = disconnected ? MessageResponse.OK(msg.id) : MessageResponse.Error(msg.id, NonexistentUserMessage);
             return new[] { resp };
         }
     }

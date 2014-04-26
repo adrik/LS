@@ -8,10 +8,16 @@ namespace MyMvc.Models.MessageProcessing
 
         public MessageResponse[] Process(string login, QueuedMessage msg)
         {
-            string code = CodeGen.Next();
+            string code;
+            do
+            {
+                code = CodeGen.Next();
+            }
+            while (UserFunctions.IsCodeTaken(code));
+
             UserFunctions.CreateUpdateUserCode(login, code);
 
-            return new[] { new MessageResponse() { Id = msg.Id, Status = MessageResponseStatus.OK, Details = code } };
+            return new[] { new MessageResponse() { id = msg.id, status = MessageResponseStatus.OK, details = code } };
         }
     }
 }

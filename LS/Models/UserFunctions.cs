@@ -65,7 +65,7 @@ namespace MyMvc.Models
         }
         public static void UpdateLocation(int userId, double lat, double lng)
         {
-            UpdateLocation(userId, lat, lng, DateTime.Now);
+            UpdateLocation(userId, lat, lng, DateTime.Now.ToUniversalTime());
         }
         public static void UpdateLocation(string login, double lat, double lng, DateTime time)
         {
@@ -73,7 +73,7 @@ namespace MyMvc.Models
         }
         public static void UpdateLocation(string login, double lat, double lng)
         {
-            UpdateLocation(login, lat, lng, DateTime.Now);
+            UpdateLocation(login, lat, lng, DateTime.Now.ToUniversalTime());
         }
         #endregion
 
@@ -161,6 +161,11 @@ namespace MyMvc.Models
             db.SaveChanges();
 
             return user;
+        }
+
+        public static bool IsCodeTaken(string code)
+        {
+            return ModelContext.Instance.Users.Any(x => x.Code == code);
         }
     }
 }

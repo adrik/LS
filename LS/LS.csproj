@@ -201,18 +201,14 @@
     <Compile Include="Services\Android.svc.cs">
       <DependentUpon>Android.svc</DependentUpon>
     </Compile>
+    <Compile Include="Services\DataContracts\RequestBag.cs" />
     <Compile Include="Services\DataContracts\DeviceInfo.cs" />
     <Compile Include="Services\DataContracts\DeviceLocation.cs" />
-    <Compile Include="Services\DataContracts\MessageBag.cs" />
+    <Compile Include="Services\DataContracts\ResponseBag.cs" />
     <Compile Include="Services\DataContracts\MessageResponse.cs" />
     <Compile Include="Services\IAndroidService.cs" />
     <Compile Include="Services\DataContracts\QueuedMessage.cs" />
     <Compile Include="Services\DataContracts\UserLocation.cs" />
-    <Compile Include="Services\Test\Data.cs" />
-    <Compile Include="Services\Test\ISecure.cs" />
-    <Compile Include="Services\Test\Secure.svc.cs">
-      <DependentUpon>Secure.svc</DependentUpon>
-    </Compile>
     <Compile Include="Services\Web.svc.cs">
       <DependentUpon>Web.svc</DependentUpon>
     </Compile>
@@ -304,7 +300,6 @@
     <Content Include="Scripts\WebService.js" />
     <Content Include="Scripts\Device.js" />
     <Content Include="Services\Android.svc" />
-    <Content Include="Services\Test\Secure.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

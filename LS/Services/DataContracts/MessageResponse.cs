@@ -7,22 +7,22 @@ namespace MyMvc.Services.DataContracts
     {
         public static MessageResponse OK(int id)
         {
-            return new MessageResponse() { Id = id, Status = MessageResponseStatus.OK };
+            return new MessageResponse() { id = id, status = MessageResponseStatus.OK };
         }
 
         public static MessageResponse Error(int id, string details)
         {
-            return new MessageResponse() { Id = id, Status = MessageResponseStatus.Error, Details = details };
+            return new MessageResponse() { id = id, status = MessageResponseStatus.Error, details = details };
         }
 
 
         [DataMember]
-        public int Id { get; set; }
+        public int id { get; set; }
 
         [DataMember]
-        public MessageResponseStatus Status { get; set; }
+        public MessageResponseStatus status { get; set; }
 
         [DataMember]
-        public string Details { get; set; }
+        public string details { get; set; }
     }
 }

@@ -36,12 +36,12 @@ namespace MyMvc.Models.MessageProcessing
 
         private static MessageResponse[] Process(string login, QueuedMessage msg, bool userExists)
         {
-            IMsgProcessor processor = GetProcessor(msg.Type);
+            IMsgProcessor processor = GetProcessor(msg.type);
 
             if (userExists || processor.CanProcessNewLogin)
                 return processor.Process(login, msg);
             else
-                return new[] { MessageResponse.Error(msg.Id, "User is not registered") };
+                return new[] { MessageResponse.Error(msg.id, "User is not registered") };
         }
 
         public static MessageResponse[] Process(string login, QueuedMessage[] messages)
@@ -57,7 +57,7 @@ namespace MyMvc.Models.MessageProcessing
             var db = Models.DB.ModelContext.Instance;
             var user = db.FindUserByLogin(login);
 
-            db.UserMessages.Add(new DB.DbUserMessage() { UserId = user.Id, Type = (int)msg.Type, Content = msg.Content });
+            db.UserMessages.Add(new DB.DbUserMessage() { UserId = user.Id, Type = (int)msg.type, Content = msg.content });
             db.SaveChanges();
         }
 
@@ -81,7 +81,7 @@ namespace MyMvc.Models.MessageProcessing
                     // DbUpdateConcurrencyException
                 }
 
-                return messages.Select(x => new QueuedMessage() { Id = x.Id, Content = x.Content, Type = (QueuedMessageType)x.Type }).ToArray();
+                return messages.Select(x => new QueuedMessage() { id = x.Id, content = x.Content, type = (QueuedMessageType)x.Type }).ToArray();
             }
         }
     }

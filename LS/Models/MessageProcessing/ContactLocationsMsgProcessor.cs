@@ -18,7 +18,7 @@ namespace MyMvc.Models.MessageProcessing
 
             return (
                 from d in details
-                select new MessageResponse() { Id = msg.Id, Status = MessageResponseStatus.OK, Details = MsgFormatter.FormatUserLocation(d) }).ToArray();
+                select new MessageResponse() { id = msg.id, status = MessageResponseStatus.OK, details = MsgFormatter.FormatUserLocation(d) }).ToArray();
         }
     }
 }

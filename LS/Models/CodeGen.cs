@@ -12,7 +12,7 @@ namespace MyMvc.Models
 
         public static string Next()
         {
-            return B64.Create((long)Math.Floor(rnd.NextDouble() * max));
+            return B64.Create((long)Math.Floor(rnd.NextDouble() * max), 6);
         }
     }
 }

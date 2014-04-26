@@ -14,15 +14,15 @@ namespace MyMvc.Models.MessageProcessing
         {
             try
             {
-                UserLocation location = MsgFormatter.ParseUserLocation(msg.Content);
+                UserLocation location = MsgFormatter.ParseUserLocation(msg.content);
 
                 UserFunctions.UpdateLocation(login, location.lat, location.lng, location.time);
 
-                return new[] { MessageResponse.OK(msg.Id) };
+                return new[] { MessageResponse.OK(msg.id) };
             }
             catch (FormatException)
             {
-                return new[] { new MessageResponse() { Id = msg.Id, Status = MessageResponseStatus.Error, Details = FormatExceptionMessage } };
+                return new[] { new MessageResponse() { id = msg.id, status = MessageResponseStatus.Error, details = FormatExceptionMessage } };
             }
         }
     }

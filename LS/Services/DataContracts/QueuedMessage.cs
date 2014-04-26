@@ -7,12 +7,12 @@ namespace MyMvc.Services.DataContracts
     public class QueuedMessage
     {
         [DataMember]
-        public int Id { get; set; }
+        public int id { get; set; }
 
         [DataMember]
-        public QueuedMessageType Type { get; set; }
+        public QueuedMessageType type { get; set; }
 
         [DataMember]
-        public string Content { get; set; }
+        public string content { get; set; }
     }
 }

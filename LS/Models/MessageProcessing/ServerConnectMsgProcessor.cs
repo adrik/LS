@@ -15,20 +15,20 @@ namespace MyMvc.Models.MessageProcessing
         {
             int test;
 
-            if (int.TryParse(msg.Content, out test))
+            if (int.TryParse(msg.content, out test))
             {
-                msg.Content = UserFunctions.SelectUser(test, x => x.User.Code).FirstOrDefault();
+                msg.content = UserFunctions.SelectUser(test, x => x.User.Code).FirstOrDefault();
             }
 
             string contactLogin;
 
-            if (UserFunctions.Connect(login, msg.Content, out contactLogin))
-                MsgProcessor.SaveMessageForUser(contactLogin, new QueuedMessage() { Content = FormatUserInfo(login), Type = QueuedMessageType.RequestClientConnect });
+            if (UserFunctions.Connect(login, msg.content, out contactLogin))
+                MsgProcessor.SaveMessageForUser(contactLogin, new QueuedMessage() { content = FormatUserInfo(login), type = QueuedMessageType.RequestClientConnect });
 
             if (contactLogin == null)
-                return new[] { MessageResponse.Error(msg.Id, NonexistentUserMessage) };
+                return new[] { MessageResponse.Error(msg.id, NonexistentUserMessage) };
             else
-                return new[] { new MessageResponse() { Id = msg.Id, Status = MessageResponseStatus.OK, Details = FormatUserInfo(contactLogin) } };
+                return new[] { new MessageResponse() { id = msg.id, status = MessageResponseStatus.OK, details = FormatUserInfo(contactLogin) } };
         }
 
         private string FormatUserInfo(string login)

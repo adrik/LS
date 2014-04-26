@@ -3,12 +3,12 @@
 namespace MyMvc.Services.DataContracts
 {
     [DataContract]
-    public class MessageBag
+    public class ResponseBag
     {
         [DataMember]
-        public MessageResponse[] Answers { get; set; }
+        public MessageResponse[] ans { get; set; }
 
         [DataMember]
-        public QueuedMessage[] Messages { get; set; }
+        public QueuedMessage[] msg { get; set; }
     }
 }

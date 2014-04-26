@@ -8,18 +8,17 @@ using System.ServiceModel;
 
 namespace MyMvc.Services
 {
-    [ServiceBehavior(Namespace = "octo.users.port", Name = "UserPort")]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class Android : IAndroidService
     {
-        public MessageBag Process(string id, QueuedMessage[] messages)
+        public ResponseBag Process(RequestBag request)
         {
-            string login = GetLogin(id);
+            string login = GetLogin(request.id);
 
-            MessageResponse[] answers = MsgProcessor.Process(login, messages);
+            MessageResponse[] answers = MsgProcessor.Process(login, request.msg);
             QueuedMessage[] storedMessages = MsgProcessor.GetUserMessages(login);
 
-            return new MessageBag() { Answers = answers, Messages = storedMessages };
+            return new ResponseBag() { ans = answers, msg = storedMessages };
         }
 
         private string GetLogin(string id)

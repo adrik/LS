@@ -8,7 +8,7 @@ namespace MyMvc.Models
 {
     public static class B64
     {
-        private static readonly string symbols = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-";
+        private static readonly string symbols = "0123456789abcdefghijk+mnopqrstuvwxyzABCDEFGH$JKLMNOPQRSTUVWXYZ_-";
 
         public static string Create(long value, int digits = 0)
         {

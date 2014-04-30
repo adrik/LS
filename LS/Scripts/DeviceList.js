@@ -41,13 +41,13 @@
                     $root.$broadcast('device-focus-all');
                 });
 
-                                ws.getMyLocations(function (list) {
-                                    $root.$broadcast('device-path', list);
-                                });
+//                                ws.getMyLocations(function (list) {
+//                                    $root.$broadcast('device-path', list);
+//                                });
 
                 var timeoutId = $interval(function () {
                     ws.getAllLocations(all(update));
-                }, 1000);
+                }, 30000);
                 element.on('$destroy', function () {
                     $interval.cancel(timeoutId);
                 });

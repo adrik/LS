@@ -51,7 +51,7 @@ namespace MyMvc.Models.MessageProcessing
 
             // filter messages and take only last location update
             QueuedMessage locationUpdate = messages.LastOrDefault(x => x.type == QueuedMessageType.RequestUpdateLocation);
-            List<QueuedMessage> filtered = messages.Where(x => x.type == QueuedMessageType.RequestUpdateLocation).ToList();
+            List<QueuedMessage> filtered = messages.Where(x => x.type != QueuedMessageType.RequestUpdateLocation).ToList();
             if (locationUpdate != null)
                 filtered.Add(locationUpdate);
 

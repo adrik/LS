@@ -35,9 +35,10 @@ namespace MyMvc.Models.DB
         {
             get
             {
-                return from l in this.Locations
-                       group l by l.DeviceId into g
-                       select g.OrderByDescending(x => x.Time).FirstOrDefault();
+                //return from l in this.Locations
+                //       group l by l.DeviceId into g
+                //       select g.OrderByDescending(x => x.Time).FirstOrDefault();
+                return this.Locations;
             }
         }
         public DbSet<DbRelation> Relations { get; set; }

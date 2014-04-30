@@ -49,7 +49,13 @@ namespace MyMvc.Models.MessageProcessing
             var db = DB.ModelContext.Instance;
             var user = db.FindUserByLogin(login);
 
-            return messages.SelectMany(x => Process(login, x, user != null)).ToArray();
+            // filter messages and take only last location update
+            QueuedMessage locationUpdate = messages.LastOrDefault(x => x.type == QueuedMessageType.RequestUpdateLocation);
+            List<QueuedMessage> filtered = messages.Where(x => x.type == QueuedMessageType.RequestUpdateLocation).ToList();
+            if (locationUpdate != null)
+                filtered.Add(locationUpdate);
+
+            return filtered.SelectMany(x => Process(login, x, user != null)).ToArray();
         }
 
         public static void SaveMessageForUser(string login, QueuedMessage msg)

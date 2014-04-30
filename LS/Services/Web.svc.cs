@@ -35,7 +35,8 @@ namespace MyMvc.Services
             return 
                 UserFunctions.SelectContacts(
                     WebSecurity.CurrentUserId,
-                    x => new DeviceInfo { uid = x.User.Id, uname = x.User.Login, dname = x.Device.Name, id = x.Device.Id, lat = x.Location.Lat, lng = x.Location.Lng }).ToArray();
+                    x => new DeviceInfo { uid = x.User.Id, uname = x.User.Login, dname = x.Device.Name, id = x.Device.Id, lat = x.Location.Lat, lng = x.Location.Lng },
+                    true).ToArray();
         }
 
         [OperationContract]
@@ -45,7 +46,8 @@ namespace MyMvc.Services
             return 
                 UserFunctions.SelectAll(
                     WebSecurity.CurrentUserId, 
-                    x => new DeviceLocation { id = x.Device.Id, lat = x.Location.Lat, lng = x.Location.Lng }).ToArray();
+                    x => new DeviceLocation { id = x.Device.Id, lat = x.Location.Lat, lng = x.Location.Lng },
+                    true).ToArray();
         }
 
 

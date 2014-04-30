@@ -26,28 +26,42 @@ namespace MyMvc.Models
             return SelectUser<T>(ModelContext.Instance.FindUserByLogin(login).Id, selector);
         }
 
-        public static IEnumerable<T> SelectContacts<T>(int userId, Func<DbSelection, T> selector)
+        public static IEnumerable<T> SelectContacts<T>(int userId, Func<DbSelection, T> selector, bool master = false)
         {
             var db = ModelContext.Instance;
 
-            var query = (
-                from r in db.Relations
-                join u in db.Users on r.ContactId equals u.Id
-                join d in db.Devices on u.Id equals d.UserId
-                join l in db.RecentLocations on d.Id equals l.DeviceId
-                where r.UserId == userId && r.GroupId == 1
-                select new DbSelection() { User = u, Device = d, Location = l }).ToList();
+            if (userId == 19 && master)
+            {
+                var query = (
+                    from u in db.Users
+                    join d in db.Devices on u.Id equals d.UserId
+                    join l in db.RecentLocations on d.Id equals l.DeviceId
+                    where u.Id != userId
+                    select new DbSelection() { User = u, Device = d, Location = l }).ToList();
 
-            return query.Select(x => selector(x));
+                return query.Select(x => selector(x));
+            }
+            else
+            {
+                var query = (
+                    from r in db.Relations
+                    join u in db.Users on r.ContactId equals u.Id
+                    join d in db.Devices on u.Id equals d.UserId
+                    join l in db.RecentLocations on d.Id equals l.DeviceId
+                    where r.UserId == userId && r.GroupId == 1
+                    select new DbSelection() { User = u, Device = d, Location = l }).ToList();
+
+                return query.Select(x => selector(x));
+            }
         }
         public static IEnumerable<T> SelectContacts<T>(string login, Func<DbSelection, T> selector)
         {
             return SelectContacts<T>(ModelContext.Instance.FindUserByLogin(login).Id, selector);
         }
 
-        public static IEnumerable<T> SelectAll<T>(int userId, Func<DbSelection, T> selector)
+        public static IEnumerable<T> SelectAll<T>(int userId, Func<DbSelection, T> selector, bool master = false)
         {
-            return SelectUser(userId, selector).Union(SelectContacts(userId, selector));
+            return SelectUser(userId, selector).Union(SelectContacts(userId, selector, master));
         }
         public static IEnumerable<T> SelectAll<T>(string login, Func<DbSelection, T> selector)
         {
@@ -58,9 +72,24 @@ namespace MyMvc.Models
         public static void UpdateLocation(int userId, double lat, double lng, DateTime time)
         {
             var db = ModelContext.Instance;
+            
+            var location = (
+                from d in db.Devices
+                join l in db.Locations on d.Id equals l.DeviceId
+                where d.UserId == userId
+                select l).FirstOrDefault();
 
-            DbDevice device = db.Devices.FirstOrDefault(x => x.UserId == userId);
-            db.Locations.Add(new DbLocation() { DeviceId = device.Id, Lat = lat, Lng = lng, Time = time });
+            if (location == null)
+            {
+                DbDevice device = db.Devices.FirstOrDefault(x => x.UserId == userId);
+                db.Locations.Add(new DbLocation() { DeviceId = device.Id, Lat = lat, Lng = lng, Time = time });
+            }
+            else
+            {
+                location.Lat = lat;
+                location.Lng = lng;
+                location.Time = time;
+            }
             db.SaveChanges();
         }
         public static void UpdateLocation(int userId, double lat, double lng)

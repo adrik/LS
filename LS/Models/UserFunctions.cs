@@ -15,7 +15,7 @@ namespace MyMvc.Models
             var query = (
                 from d in db.Devices
                 join u in db.Users on d.UserId equals u.Id
-                join l in db.RecentLocations on d.Id equals l.DeviceId
+                from l in db.RecentLocations.Where(x => x.DeviceId == d.Id).DefaultIfEmpty()
                 where u.Id == userId
                 select new DbSelection() { User = u, Device = d, Location = l }).ToList();
 

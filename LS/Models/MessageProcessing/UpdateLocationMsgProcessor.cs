@@ -16,7 +16,7 @@ namespace MyMvc.Models.MessageProcessing
             {
                 UserLocation location = MsgFormatter.ParseUserLocation(msg.content);
 
-                UserFunctions.UpdateLocation(login, location.lat, location.lng, location.time);
+                UserFunctions.UpdateLocation(login, location.lat, location.lng, location.time.Value);
 
                 return new[] { MessageResponse.OK(msg.id) };
             }

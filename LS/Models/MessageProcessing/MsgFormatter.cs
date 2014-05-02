@@ -13,21 +13,25 @@ namespace MyMvc.Models.MessageProcessing
 
         public static string FormatUserLocation(UserLocation location)
         {
-            return string.Format("{0}|{1}|{2}|{3}", location.id, location.lat, location.lng, location.time.ToString(dateFormat));
+            return string.Format("{0}|{1}|{2}|{3}", 
+                location.id, 
+                location.lat, 
+                location.lng, 
+                location.time.HasValue ? location.time.Value.ToString(dateFormat) : string.Empty);
         }
 
         public static UserLocation ParseUserLocation(string text)
         {
-            string[] parts = text.Split(splitChars);
+            string[] parts = text.Trim().Split(splitChars, StringSplitOptions.RemoveEmptyEntries);
 
-            if (parts.Length> 3)
+            if (parts.Length > 3)
                 throw new FormatException("Too many parts");
 
             double[] latLng = (
                 from str in parts.Take(2)
                 select double.Parse(str.Trim())).ToArray();
 
-            DateTime time = DateTime.Now;
+            DateTime time = DateTime.Now.ToUniversalTime();
             if (parts.Length > 2)
                 time = DateTime.ParseExact(parts[2], dateFormat, System.Globalization.CultureInfo.InvariantCulture);
 

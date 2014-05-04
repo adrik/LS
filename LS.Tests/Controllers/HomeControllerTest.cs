@@ -24,31 +24,5 @@ namespace MyMvc.Tests.Controllers
             // Утверждение
             Assert.AreEqual("Измените этот шаблон, чтобы быстро приступить к работе над приложением ASP.NET MVC.", result.ViewBag.Message);
         }
-
-        [TestMethod]
-        public void About()
-        {
-            // Упорядочение
-            HomeController controller = new HomeController();
-
-            // Действие
-            ViewResult result = controller.About() as ViewResult;
-
-            // Утверждение
-            Assert.IsNotNull(result);
-        }
-
-        [TestMethod]
-        public void Contact()
-        {
-            // Упорядочение
-            HomeController controller = new HomeController();
-
-            // Действие
-            ViewResult result = controller.Contact() as ViewResult;
-
-            // Утверждение
-            Assert.IsNotNull(result);
-        }
     }
 }

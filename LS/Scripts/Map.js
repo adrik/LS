@@ -64,7 +64,7 @@
                     console.log('adding ', device);
                     var marker = new google.maps.Marker({
                         map: map,
-                        icon: '/thumbnail/load/' + device.uid,
+                        //icon: '/thumbnail/load/' + device.uid,
                         position: new google.maps.LatLng(device.lat, device.lng),
                         title: device.uname
                     });

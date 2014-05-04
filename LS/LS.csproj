@@ -279,6 +279,7 @@
     <Content Include="Images\c-plus.png" />
     <Content Include="Images\caution-1.jpg" />
     <Content Include="Images\gear.gif" />
+    <Content Include="Images\ic_action_launcher_big.png" />
     <Content Include="Images\progress-1.png" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\Application.js" />
@@ -365,6 +366,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\DeviceTemplate.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Home\Master.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

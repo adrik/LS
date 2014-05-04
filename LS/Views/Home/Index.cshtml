@@ -1,69 +1,37 @@
 ﻿@{
     Layout = null;
 }
+
 <!DOCTYPE html>
 
-<html ng-app="way-app">
+<html>
 <head>
-    <meta name="viewport" content="width=device-width, height=device-height" />
-    <title>Index</title>
-    @Styles.Render("~/Content/css")
-    <script type="text/javascript" src="/Scripts/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript" src="/Scripts/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/Scripts/angular.min.js"></script>
-    <script type="text/javascript" src="/Scripts/Application.js"></script>
-    <script type="text/javascript" src="/Scripts/WebService.js"></script>
-    <script type="text/javascript" src="/Scripts/Device.js"></script>
-    <script type="text/javascript" src="/Scripts/DeviceList.js"></script>
-    <script type="text/javascript" src="/Scripts/Map.js"></script>
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <meta name="viewport" content="width=device-width" />
+    <title>GPS Location Tracker</title>
+    <style type="text/css">
+        #center 
+        {
+            position: fixed;
+            width: 512px;
+            height: 600px;
+            left: 50%;
+            top: 50%;
+            margin-left: -256px;
+            margin-top: -300px;
+            font: bold 35px Verdana;
+            color: #505050;
+        }
+        #center > *
+        {
+            display: block;
+            text-align: center;   
+        }
+    </style>
 </head>
 <body>
-    <div id="container">
-        <div id="map" map-element></div>
-        <div id="devices" ng-controller="DeviceController">
-            <device-list>
-                lalala
-            </device-list>
-        </div>
-        <div id="background"></div>
-
-        <style type="text/css">
-            #marker
-            {
-                position: absolute; 
-                left: 200px; 
-                top: 300px;
-                width: 54px;
-            }
-            .marker .face 
-            {
-                background-image: url(/thumbnail/load/19);
-                width: 54px;
-                height: 54px;
-                background-repeat: no-repeat; 
-                background-position: center center;
-                cursor: pointer;
-                border: 2px solid #fb9114;
-                border-radius: 3px;
-                box-shadow: 1px 1px 3px #a0a0b0;
-            }
-            .marker .arrow 
-            {
-                width: 10px;
-                height: 10px;
-                border-top: 10px solid #fb9114;
-                border-left: 5px solid transparent;
-                border-right: 5px solid transparent;
-                position: relative;
-                left: 22px;
-                
-            }
-        </style>
-        <div id="marker" class="marker">
-            <div class="face"></div>
-            <div class="arrow"></div>
-        </div>
+    <div id="center">
+        <img src="/images/ic_action_launcher_big.png" alt="GPS Location Tracker" />
+        <span>UNDER CONSTRUCTION</span>
     </div>
 </body>
 </html>

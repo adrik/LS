@@ -13,24 +13,24 @@ namespace MyMvc.Controllers
 
         public ActionResult Test()
         {
-            long half = 64 * 64 * 64;
-            long max = half * half;
-            //int max = 64 * 64 * 64 * 64 * 64;
+            return new RedirectResult("/");
 
-            Random r = new Random();
-            long code = (long)Math.Floor(r.NextDouble() * max);
-            //int code = r.Next(max - 1);
-            int k = 6;
+            //long half = 64 * 64 * 64;
+            //long max = half * half;
+            ////int max = 64 * 64 * 64 * 64 * 64;
 
-            ViewBag.Rnd = B64.Create(code, k);
-            ViewBag.Min = B64.Create(0, k);
-            ViewBag.Max = max;
+            //Random r = new Random();
+            //long code = (long)Math.Floor(r.NextDouble() * max);
+            ////int code = r.Next(max - 1);
+            //int k = 6;
 
-            ViewBag.Num = Enumerable.Range(0, 120).Select(x => CodeGen.Next());
+            //ViewBag.Rnd = B64.Create(code, k);
+            //ViewBag.Min = B64.Create(0, k);
+            //ViewBag.Max = max;
 
-            
+            //ViewBag.Num = Enumerable.Range(0, 120).Select(x => CodeGen.Next());
 
-            return View();
+            //return View();
         }
     }
 }

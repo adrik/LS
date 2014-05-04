@@ -9,15 +9,19 @@ namespace MyMvc.Models.MessageProcessing
     public static class MsgFormatter
     {
         private static char[] splitChars = new[] { '|', ',' };
+        private static string exactDateFormat = "dd.MM.yyyy HH:mm:ss";
         private static string dateFormat = "dd.MM.yyyy HH:mm";
 
         public static string FormatUserLocation(UserLocation location)
         {
-            return string.Format("{0}|{1}|{2}|{3}", 
-                location.id, 
-                location.lat, 
-                location.lng, 
-                location.time.HasValue ? location.time.Value.ToString(dateFormat) : string.Empty);
+            if (location.time.HasValue)
+                return string.Format("{0}|{1}|{2}|{3}",
+                    location.id,
+                    location.lat,
+                    location.lng,
+                    location.time.Value.ToString(dateFormat));
+            else
+                return location.id;
         }
 
         public static UserLocation ParseUserLocation(string text)
@@ -33,7 +37,10 @@ namespace MyMvc.Models.MessageProcessing
 
             DateTime time = DateTime.Now.ToUniversalTime();
             if (parts.Length > 2)
-                time = DateTime.ParseExact(parts[2], dateFormat, System.Globalization.CultureInfo.InvariantCulture);
+            {
+                if (!DateTime.TryParseExact(parts[2], exactDateFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal, out time))
+                    time = DateTime.ParseExact(parts[2], dateFormat, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.AssumeUniversal);
+            }
 
             return new UserLocation() { lat = latLng[0], lng = latLng[1], time = time };
         }

@@ -17,12 +17,6 @@ namespace MyMvc.Controllers
     [InitializeSimpleMembership]
     public class AccountController : Controller
     {
-        [AllowAnonymous]
-        public ActionResult Login()
-        {
-            return View();
-        }
-
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]

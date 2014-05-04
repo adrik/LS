@@ -13,12 +13,12 @@ namespace MyMvc.Models.MessageProcessing
 
         public MessageResponse[] Process(string login, QueuedMessage msg)
         {
-            int test;
+            //int test;
 
-            if (int.TryParse(msg.content, out test))
-            {
-                msg.content = UserFunctions.SelectUser(test, x => x.User.Code).FirstOrDefault();
-            }
+            //if (int.TryParse(msg.content, out test))
+            //{
+            //    msg.content = UserFunctions.SelectUser(test, x => x.User.Code).FirstOrDefault();
+            //}
 
             string contactLogin;
 

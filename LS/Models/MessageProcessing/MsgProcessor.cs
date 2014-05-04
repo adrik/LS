@@ -50,12 +50,17 @@ namespace MyMvc.Models.MessageProcessing
             var user = db.FindUserByLogin(login);
 
             // filter messages and take only last location update
-            QueuedMessage locationUpdate = messages.LastOrDefault(x => x.type == QueuedMessageType.RequestUpdateLocation);
-            List<QueuedMessage> filtered = messages.Where(x => x.type != QueuedMessageType.RequestUpdateLocation).ToList();
-            if (locationUpdate != null)
-                filtered.Add(locationUpdate);
+            var locationUpdates = messages.Where(x => x.type == QueuedMessageType.RequestUpdateLocation).ToArray();
 
-            return filtered.SelectMany(x => Process(login, x, user != null)).ToArray();
+            List<QueuedMessage> filtered = messages.Where(x => x.type != QueuedMessageType.RequestUpdateLocation).ToList();
+            if (locationUpdates.Length > 0)
+                filtered.Add(locationUpdates.Last());
+
+            var result = filtered.SelectMany(x => Process(login, x, user != null));
+            if (locationUpdates.Length > 1)
+                result = result.Union(locationUpdates.Take(locationUpdates.Length - 1).Select(x => MessageResponse.OK(x.id)));
+
+            return result.ToArray();
         }
 
         public static void SaveMessageForUser(string login, QueuedMessage msg)

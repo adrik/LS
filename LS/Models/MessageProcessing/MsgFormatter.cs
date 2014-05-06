@@ -11,6 +11,7 @@ namespace MyMvc.Models.MessageProcessing
         private static char[] splitChars = new[] { '|', ',' };
         private static string exactDateFormat = "dd.MM.yyyy HH:mm:ss";
         private static string dateFormat = "dd.MM.yyyy HH:mm";
+        private static DateTime date1970 = new DateTime(1970, 1, 1, 0, 0, 0);
 
         public static string FormatUserLocation(UserLocation location)
         {
@@ -45,13 +46,9 @@ namespace MyMvc.Models.MessageProcessing
             return new UserLocation() { lat = latLng[0], lng = latLng[1], time = time };
         }
 
-
-        private class MyFormatProvider : IFormatProvider
+        public static DateTime DateFromAndroid(long seconds)
         {
-            public object GetFormat(Type formatType)
-            {
-                throw new NotImplementedException();
-            }
+            return date1970.AddSeconds(seconds);
         }
     }
 

@@ -54,6 +54,25 @@ namespace MyMvc.Models
                 return query.Select(x => selector(x));
             }
         }
+
+        public static IEnumerable<T> SelectContacts<T>(int userId, Func<DbSelection, T> selector, DateTime updateTime)
+        {
+            var db = ModelContext.Instance;
+            
+            var query = (
+                from r in db.Relations
+                join u in db.Users on r.ContactId equals u.Id
+                join d in db.Devices on u.Id equals d.UserId
+                join l in db.RecentLocations on d.Id equals l.DeviceId
+                where r.UserId == userId && r.GroupId == 1 && l.Time > updateTime
+                select new DbSelection() { User = u, Device = d, Location = l }).ToList();
+
+            return query.Select(x => selector(x));
+        }
+        public static IEnumerable<T> SelectContacts<T>(string login, Func<DbSelection, T> selector, DateTime updateTime)
+        {
+            return SelectContacts<T>(ModelContext.Instance.FindUserByLogin(login).Id, selector, updateTime);
+        }
         public static IEnumerable<T> SelectContacts<T>(string login, Func<DbSelection, T> selector)
         {
             return SelectContacts<T>(ModelContext.Instance.FindUserByLogin(login).Id, selector);

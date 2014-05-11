@@ -6,7 +6,7 @@ namespace MyMvc.Models.MessageProcessing
     {
         public bool CanProcessNewLogin { get { return true; } }
 
-        public MessageResponse[] Process(string login, QueuedMessage msg)
+        public MessageResponse[] Process(Login login, QueuedMessage msg)
         {
             string code;
             do
@@ -15,7 +15,7 @@ namespace MyMvc.Models.MessageProcessing
             }
             while (UserFunctions.IsCodeTaken(code));
 
-            UserFunctions.CreateUpdateUserCode(login, code);
+            UserFunctions.CreateOrUpdateUserCode(login, code);
 
             return new[] { new MessageResponse() { id = msg.id, status = MessageResponseStatus.OK, details = code } };
         }

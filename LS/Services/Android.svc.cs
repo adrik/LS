@@ -13,7 +13,7 @@ namespace MyMvc.Services
     {
         public ResponseBag Process(RequestBag request)
         {
-            string login = GetLogin(request.id);
+            Login login = GetLogin(request.id);
 
             MessageResponse[] answers = MsgProcessor.Process(login, request.msg);
             QueuedMessage[] storedMessages = MsgProcessor.GetUserMessages(login);
@@ -21,9 +21,9 @@ namespace MyMvc.Services
             return new ResponseBag() { ans = answers, msg = storedMessages };
         }
 
-        private string GetLogin(string id)
+        private Login GetLogin(string id)
         {
-            return id;
+            return new Login(id);
         }
     }
 }

@@ -9,34 +9,17 @@ namespace MyMvc.Models.MessageProcessing
     {
         public bool CanProcessNewLogin { get { return false; } }
 
-        public MessageResponse[] Process(string login, QueuedMessage msg)
+        public MessageResponse[] Process(Login login, QueuedMessage msg)
         {
-            IEnumerable<UserLocation> details = null;
-            long androidTime;
+            DateTime updateTime = DateTime.UtcNow;
 
-            if (msg.content != null && long.TryParse(msg.content, out androidTime) && androidTime > 0)
-            {
-                DateTime updateTime = MsgFormatter.DateFromAndroid(androidTime);
-                
-                details =
-                    UserFunctions.SelectContacts(
-                        login,
-                        x => new UserLocation { id = x.User.Login, lat = x.Location.Lat, lng = x.Location.Lng, time = x.Location.Time },
-                        updateTime).ToArray();
-            }
-            else
-            {
-                details =
-                    UserFunctions.SelectContacts(
-                        login,
-                        x => new UserLocation
-                        {
-                            id = x.User.Login,
-                            lat = x.Location != null ? x.Location.Lat : 0,
-                            lng = x.Location != null ? x.Location.Lng : 0,
-                            time = x.Location != null ? (DateTime?)x.Location.Time : null
-                        }).ToArray();
-            }
+            var details =
+                UserFunctions.SelectContactsForDevice(
+                    login.Device,
+                    x => new UserLocation { id = x.User.Login, lat = x.Location.Lat, lng = x.Location.Lng, time = x.Location.Time }).ToArray();
+
+            login.Device.LastUpdate = updateTime;
+            DB.ModelContext.Instance.SaveChanges();
 
             return (
                 from d in details

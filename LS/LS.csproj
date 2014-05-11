@@ -180,6 +180,7 @@
     <Compile Include="Models\DB\DbUserMessage.cs" />
     <Compile Include="Models\DB\DbContext.cs" />
     <Compile Include="Models\DB\DbSelection.cs" />
+    <Compile Include="Models\Login.cs" />
     <Compile Include="Models\MessageProcessing\CodeMsgProcessor.cs" />
     <Compile Include="Models\MessageProcessing\ContactLocationsMsgProcessor.cs" />
     <Compile Include="Models\MessageProcessing\MsgFormatter.cs" />

@@ -34,21 +34,18 @@ namespace MyMvc.Models.MessageProcessing
             }
         }
 
-        private static MessageResponse[] Process(string login, QueuedMessage msg, bool userExists)
+        private static MessageResponse[] Process(Login login, QueuedMessage msg)
         {
             IMsgProcessor processor = GetProcessor(msg.type);
 
-            if (userExists || processor.CanProcessNewLogin)
+            if (login.Device != null || processor.CanProcessNewLogin)
                 return processor.Process(login, msg);
             else
                 return new[] { MessageResponse.Error(msg.id, "User is not registered") };
         }
 
-        public static MessageResponse[] Process(string login, QueuedMessage[] messages)
+        public static MessageResponse[] Process(Login login, QueuedMessage[] messages)
         {
-            var db = DB.ModelContext.Instance;
-            var user = db.FindUserByLogin(login);
-
             // filter messages and take only last location update
             var locationUpdates = messages.Where(x => x.type == QueuedMessageType.RequestUpdateLocation).ToArray();
 
@@ -56,28 +53,26 @@ namespace MyMvc.Models.MessageProcessing
             if (locationUpdates.Length > 0)
                 filtered.Add(locationUpdates.Last());
 
-            var result = filtered.SelectMany(x => Process(login, x, user != null));
+            var result = filtered.SelectMany(x => Process(login, x));
             if (locationUpdates.Length > 1)
                 result = result.Union(locationUpdates.Take(locationUpdates.Length - 1).Select(x => MessageResponse.OK(x.id)));
 
             return result.ToArray();
         }
 
-        public static void SaveMessageForUser(string login, QueuedMessage msg)
+        public static void SaveMessageForUser(DB.DbUser user, QueuedMessage msg)
         {
             var db = Models.DB.ModelContext.Instance;
-            var user = db.FindUserByLogin(login);
 
             db.UserMessages.Add(new DB.DbUserMessage() { UserId = user.Id, Type = (int)msg.type, Content = msg.content });
             db.SaveChanges();
         }
 
-        public static QueuedMessage[] GetUserMessages(string login)
+        public static QueuedMessage[] GetUserMessages(Login login)
         {
             var db = Models.DB.ModelContext.Instance;
-            var user = db.FindUserByLogin(login);
 
-            if (user == null || !db.UserMessages.Any(x => x.UserId == user.Id))
+            if (login.User == null || !db.UserMessages.Any(x => x.UserId == login.User.Id))
                 return new QueuedMessage[] { };
             else
             {
@@ -85,7 +80,7 @@ namespace MyMvc.Models.MessageProcessing
 
                 lock (msgLock)
                 {
-                    messages = db.UserMessages.Where(x => x.UserId == user.Id).ToArray();
+                    messages = db.UserMessages.Where(x => x.UserId == login.User.Id).ToArray();
                     foreach (var msg in messages)
                         db.UserMessages.Remove(msg);
                     db.SaveChanges();

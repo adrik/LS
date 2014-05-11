@@ -7,35 +7,28 @@ namespace MyMvc.Models.MessageProcessing
 {
     public class ServerConnectMsgProcessor : IMsgProcessor
     {
-        private const string NonexistentUserMessage = "The user does not exist";
+        private const string NonexistentUserMessage = "not_exist";
 
         public bool CanProcessNewLogin { get { return false; } }
 
-        public MessageResponse[] Process(string login, QueuedMessage msg)
+        public MessageResponse[] Process(Login login, QueuedMessage msg)
         {
-            //int test;
+            DB.DbUser contact;
 
-            //if (int.TryParse(msg.content, out test))
-            //{
-            //    msg.content = UserFunctions.SelectUser(test, x => x.User.Code).FirstOrDefault();
-            //}
+            if (UserFunctions.Connect(login.User, msg.content, out contact))
+                MsgProcessor.SaveMessageForUser(contact, new QueuedMessage() { content = FormatUserInfo(login.User.Id), type = QueuedMessageType.RequestClientConnect });
 
-            string contactLogin;
-
-            if (UserFunctions.Connect(login, msg.content, out contactLogin))
-                MsgProcessor.SaveMessageForUser(contactLogin, new QueuedMessage() { content = FormatUserInfo(login), type = QueuedMessageType.RequestClientConnect });
-
-            if (contactLogin == null)
+            if (contact == null)
                 return new[] { MessageResponse.Error(msg.id, NonexistentUserMessage) };
             else
-                return new[] { new MessageResponse() { id = msg.id, status = MessageResponseStatus.OK, details = FormatUserInfo(contactLogin) } };
+                return new[] { new MessageResponse() { id = msg.id, status = MessageResponseStatus.OK, details = FormatUserInfo(contact.Id) } };
         }
 
-        private string FormatUserInfo(string login)
+        private string FormatUserInfo(int userId)
         {
             var details =
                     UserFunctions.SelectUser(
-                        login,
+                        userId,
                         x => new UserLocation { 
                             id = x.User.Login, 
                             lat = x.Location != null ? x.Location.Lat : 0, 

@@ -55,7 +55,7 @@ namespace MyMvc.Models
             }
         }
 
-        public static IEnumerable<T> SelectContacts<T>(int userId, Func<DbSelection, T> selector, DateTime updateTime)
+        public static IEnumerable<T> SelectContactsForDevice<T>(DbDevice device, Func<DbSelection, T> selector)
         {
             var db = ModelContext.Instance;
             
@@ -64,14 +64,11 @@ namespace MyMvc.Models
                 join u in db.Users on r.ContactId equals u.Id
                 join d in db.Devices on u.Id equals d.UserId
                 join l in db.RecentLocations on d.Id equals l.DeviceId
-                where r.UserId == userId && r.GroupId == 1 && l.Time > updateTime
+                where r.UserId == device.UserId && r.GroupId == 1 && 
+                    (!device.LastUpdate.HasValue || l.Time > device.LastUpdate.Value)
                 select new DbSelection() { User = u, Device = d, Location = l }).ToList();
 
             return query.Select(x => selector(x));
-        }
-        public static IEnumerable<T> SelectContacts<T>(string login, Func<DbSelection, T> selector, DateTime updateTime)
-        {
-            return SelectContacts<T>(ModelContext.Instance.FindUserByLogin(login).Id, selector, updateTime);
         }
         public static IEnumerable<T> SelectContacts<T>(string login, Func<DbSelection, T> selector)
         {
@@ -125,55 +122,47 @@ namespace MyMvc.Models
         }
         #endregion
 
-        public static void CreateUpdateUserCode(string login, string code)
+        public static void CreateOrUpdateUserCode(Login login, string code)
         {
             var db = ModelContext.Instance;
-            var user = db.FindUserByLogin(login);
             
-            if (user == null)
+            if (login.User == null)
             {
-                CreateUser(login, code);
+                CreateUser(login.Name, code);
             }
             else
             {
-                user.Code = code;
+                login.User.Code = code;
                 db.SaveChanges();
             }
         }
 
-        public static bool Connect(string login, string code, out string other)
+        public static bool Connect(DbUser user, string code, out DbUser contact)
         {
             var db = ModelContext.Instance;
-
-            var user = db.FindUserByLogin(login);
-            var contact = db.Users.SingleOrDefault(x => x.Code == code);
+            contact = db.Users.SingleOrDefault(x => x.Code == code);
 
             if (contact != null)
             {
-                other = contact.Login;
-                bool connected = db.Relations.Any(x => x.UserId == user.Id && x.ContactId == contact.Id);
+                int contactId = contact.Id;
+                bool alreadyConnected = db.Relations.Any(x => x.UserId == user.Id && x.ContactId == contactId);
 
-                if (!connected)
+                if (!alreadyConnected)
                 {
-                    db.Relations.Add(new DbRelation() { UserId = user.Id, ContactId = contact.Id, GroupId = 1 });
-                    db.Relations.Add(new DbRelation() { UserId = contact.Id, ContactId = user.Id, GroupId = 1 });
+                    db.Relations.Add(new DbRelation() { UserId = user.Id, ContactId = contactId, GroupId = 1 });
+                    db.Relations.Add(new DbRelation() { UserId = contactId, ContactId = user.Id, GroupId = 1 });
                     db.SaveChanges();
 
                     return true;
                 }
             }
-            else
-                other = null;
 
             return false;
         }
 
-        public static bool Disconnect(string login, string other)
+        public static bool Disconnect(DbUser user, DbUser contact)
         {
             var db = ModelContext.Instance;
-
-            var user = db.FindUserByLogin(login);
-            var contact = db.FindUserByLogin(other);
 
             if (contact != null)
             {

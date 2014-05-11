@@ -4,7 +4,7 @@ namespace MyMvc.Models.MessageProcessing
 {
     public interface IMsgProcessor
     {
-        MessageResponse[] Process(string login, QueuedMessage msg);
+        MessageResponse[] Process(Login login, QueuedMessage msg);
         bool CanProcessNewLogin { get; }
     }
 }

@@ -13,12 +13,6 @@ namespace MyMvc.Models.DB
         public string Name { get; set; }
         public string DeviceKey { get; set; }
         public int Status { get; set; }
-    }
-
-    public enum DeviceStatus
-    {
-        Active = 1,
-        Available = 2,
-        DND = 3
+        public DateTime? LastUpdate { get; set; }
     }
 }

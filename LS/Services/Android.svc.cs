@@ -2,9 +2,11 @@
 using System.Linq;
 using System.ServiceModel.Activation;
 using MyMvc.Models;
-using MyMvc.Services.DataContracts;
-using MyMvc.Models.MessageProcessing;
 using System.ServiceModel;
+using MyMvc.Services.DataContracts;
+using MyMvc.Services.DataContracts.V2;
+using MyMvc.Models.MessageProcessing;
+using MyMvc.Models.Messages;
 
 namespace MyMvc.Services
 {
@@ -19,6 +21,17 @@ namespace MyMvc.Services
             QueuedMessage[] storedMessages = MsgProcessor.GetUserMessages(login);
 
             return new ResponseBag() { ans = answers, msg = storedMessages };
+        }
+
+        public ResponseData Query(RequestData request)
+        {
+            Login login = new Login(int.Parse(request.i));
+            ResponseData response = new ResponseData();
+
+            var allMessages = Messages.GetSavedMessages(login).Union(request.m);
+            Messages.Process(login, allMessages, response);
+
+            return response;
         }
 
         private Login GetLogin(string id)

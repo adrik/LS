@@ -177,7 +177,8 @@
     <Compile Include="Handlers\ThumbnailHandler.cs" />
     <Compile Include="Models\B64.cs" />
     <Compile Include="Models\CodeGen.cs" />
-    <Compile Include="Models\DB\DbUserMessage.cs" />
+    <Compile Include="Models\DB\DbDeviceMessage.cs" />
+    <Compile Include="Models\DB\DbDeviceRelation.cs" />
     <Compile Include="Models\DB\DbContext.cs" />
     <Compile Include="Models\DB\DbSelection.cs" />
     <Compile Include="Models\Login.cs" />
@@ -189,9 +190,19 @@
     <Compile Include="Models\MessageProcessing\IMsgProcessor.cs" />
     <Compile Include="Models\MessageProcessing\MsgProcessor.cs" />
     <Compile Include="Models\MessageProcessing\UpdateLocationMsgProcessor.cs" />
-    <Compile Include="Models\QueuedMessageType.cs" />
+    <Compile Include="Models\Messages\MP_ClientConnect.cs" />
+    <Compile Include="Models\Messages\MP_ClientDisconnect.cs" />
+    <Compile Include="Models\Messages\MP_Code.cs" />
+    <Compile Include="Models\Messages\MP_ContactLocations.cs" />
+    <Compile Include="Models\Messages\IMsgProcessor.cs" />
+    <Compile Include="Models\Messages\MsgFormatter.cs" />
+    <Compile Include="Models\Messages\Messages.cs" />
+    <Compile Include="Models\Messages\MP_ServerConnect.cs" />
+    <Compile Include="Models\Messages\MP_ServerDisconnect.cs" />
+    <Compile Include="Models\Messages\MP_UpdateLocation.cs" />
+    <Compile Include="Models\Messages\MsgProcessorBroker.cs" />
+    <Compile Include="Models\MessageType.cs" />
     <Compile Include="Models\MyMembershipProvider.cs" />
-    <Compile Include="Models\DB\DbRelation.cs" />
     <Compile Include="Models\DB\DbThumbnail.cs" />
     <Compile Include="Models\DB\DbUser.cs" />
     <Compile Include="Models\DB\DbLocation.cs" />
@@ -202,6 +213,10 @@
     <Compile Include="Services\Android.svc.cs">
       <DependentUpon>Android.svc</DependentUpon>
     </Compile>
+    <Compile Include="Services\DataContracts.V2\DataMessage.cs" />
+    <Compile Include="Services\DataContracts.V2\DeviceLocation.cs" />
+    <Compile Include="Services\DataContracts.V2\RequestData.cs" />
+    <Compile Include="Services\DataContracts.V2\ResponseData.cs" />
     <Compile Include="Services\DataContracts\RequestBag.cs" />
     <Compile Include="Services\DataContracts\DeviceInfo.cs" />
     <Compile Include="Services\DataContracts\DeviceLocation.cs" />

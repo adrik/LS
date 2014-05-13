@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MyMvc.Services.DataContracts;
+using MyMvc.Services.DataContracts.V2;
 
 namespace MyMvc.Models.MessageProcessing
 {
@@ -13,18 +14,18 @@ namespace MyMvc.Models.MessageProcessing
 
         public MessageResponse[] Process(Login login, QueuedMessage msg)
         {
-            DB.DbUser contact;
+            DB.DbDevice contact;
 
-            if (UserFunctions.Connect(login.User, msg.content, out contact))
-                MsgProcessor.SaveMessageForUser(contact, new QueuedMessage() { content = FormatUserInfo(login.User.Id), type = QueuedMessageType.RequestClientConnect });
+            if (UserFunctions.Connect(login.Device, msg.content, out contact))
+                Messages.Messages.SaveMessageForDevice(contact.Id, new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.RequestClientConnect });
 
             if (contact == null)
                 return new[] { MessageResponse.Error(msg.id, NonexistentUserMessage) };
             else
-                return new[] { new MessageResponse() { id = msg.id, status = MessageResponseStatus.OK, details = FormatUserInfo(contact.Id) } };
+                return new[] { new MessageResponse() { id = msg.id, status = MessageResponseStatus.OK, details = FormatUserInfo(contact.UserId) } };
         }
 
-        private string FormatUserInfo(int userId)
+        public static string FormatUserInfo(int userId)
         {
             var details =
                     UserFunctions.SelectUser(

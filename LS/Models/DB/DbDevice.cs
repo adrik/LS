@@ -12,6 +12,7 @@ namespace MyMvc.Models.DB
         public int UserId { get; set; }
         public string Name { get; set; }
         public string DeviceKey { get; set; }
+        public string Code { get; set; }
         public int Status { get; set; }
         public DateTime? LastUpdate { get; set; }
     }

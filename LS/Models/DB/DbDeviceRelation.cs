@@ -5,11 +5,11 @@ using System.Web;
 
 namespace MyMvc.Models.DB
 {
-    public class DbRelation
+    public class DbDeviceRelation
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public int ContactId { get; set; }
+        public int DeviceId { get; set; }
+        public int OtherDeviceId { get; set; }
         public int GroupId { get; set; }
     }
 }

@@ -14,5 +14,6 @@ namespace MyMvc.Models.DB
         public DateTime Time { get; set; }
         public double Lat { get; set; }
         public double Lng { get; set; }
+        public double Accuracy { get; set; }
     }
 }

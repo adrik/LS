@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using MyMvc.Services.DataContracts;
+using MyMvc.Services.DataContracts.V2;
 
 namespace MyMvc.Models.MessageProcessing
 {
@@ -15,19 +16,19 @@ namespace MyMvc.Models.MessageProcessing
         private static ContactLocationsMsgProcessor _contactLocationsMP = new ContactLocationsMsgProcessor();
         private static CodeMsgProcessor _codeMP = new CodeMsgProcessor();
 
-        private static IMsgProcessor GetProcessor(QueuedMessageType type)
+        private static IMsgProcessor GetProcessor(MessageType type)
         {
             switch (type)
             {
-                case QueuedMessageType.RequestUpdateLocation:
+                case MessageType.RequestUpdateLocation:
                     return _updateLocationMP;
-                case QueuedMessageType.RequestServerConnect:
+                case MessageType.RequestServerConnect:
                     return _serverConnectMP;
-                case QueuedMessageType.RequestServerDisconnect:
+                case MessageType.RequestServerDisconnect:
                     return _serverDisconnectMP;
-                case QueuedMessageType.RequestCode:
+                case MessageType.RequestCode:
                     return _codeMP;
-                case QueuedMessageType.RequestContactLocations:
+                case MessageType.RequestContactLocations:
                     return _contactLocationsMP;
                 default:
                     throw new ArgumentException();
@@ -47,9 +48,9 @@ namespace MyMvc.Models.MessageProcessing
         public static MessageResponse[] Process(Login login, QueuedMessage[] messages)
         {
             // filter messages and take only last location update
-            var locationUpdates = messages.Where(x => x.type == QueuedMessageType.RequestUpdateLocation).ToArray();
+            var locationUpdates = messages.Where(x => x.type == MessageType.RequestUpdateLocation).ToArray();
 
-            List<QueuedMessage> filtered = messages.Where(x => x.type != QueuedMessageType.RequestUpdateLocation).ToList();
+            List<QueuedMessage> filtered = messages.Where(x => x.type != MessageType.RequestUpdateLocation).ToList();
             if (locationUpdates.Length > 0)
                 filtered.Add(locationUpdates.Last());
 
@@ -60,35 +61,28 @@ namespace MyMvc.Models.MessageProcessing
             return result.ToArray();
         }
 
-        public static void SaveMessageForUser(DB.DbUser user, QueuedMessage msg)
-        {
-            var db = Models.DB.ModelContext.Instance;
-
-            db.UserMessages.Add(new DB.DbUserMessage() { UserId = user.Id, Type = (int)msg.type, Content = msg.content });
-            db.SaveChanges();
-        }
-
         public static QueuedMessage[] GetUserMessages(Login login)
         {
-            var db = Models.DB.ModelContext.Instance;
+            DataMessage[] messages = Messages.Messages.GetSavedMessages(login);
+            List<QueuedMessage> result = new List<QueuedMessage>();
 
-            if (login.User == null || !db.UserMessages.Any(x => x.UserId == login.User.Id))
-                return new QueuedMessage[] { };
-            else
+            foreach (DataMessage msg in messages)
             {
-                DB.DbUserMessage[] messages = null;
+                int deviceId = int.Parse(msg.c);
+                var device = UserFunctions.SelectDevice(deviceId);
 
-                lock (msgLock)
+                switch (msg.t)
                 {
-                    messages = db.UserMessages.Where(x => x.UserId == login.User.Id).ToArray();
-                    foreach (var msg in messages)
-                        db.UserMessages.Remove(msg);
-                    db.SaveChanges();
-                    // DbUpdateConcurrencyException
+                    case MessageType.RequestClientConnect:
+                        result.Add(new QueuedMessage() { id = 0, content = ServerConnectMsgProcessor.FormatUserInfo(device.UserId), type = msg.t });
+                        break;
+                    case MessageType.RequestClientDisconnect:
+                        result.Add(new QueuedMessage() { id = 0, content = UserFunctions.SelectUser(device.UserId).Login, type = msg.t });
+                        break;
                 }
-
-                return messages.Select(x => new QueuedMessage() { id = x.Id, content = x.Content, type = (QueuedMessageType)x.Type }).ToArray();
             }
+
+            return result.ToArray();
         }
     }
 }

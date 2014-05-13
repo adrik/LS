@@ -12,6 +12,7 @@ namespace MyMvc.Models
         public DbUser User { get; private set; }
         public DbDevice Device { get; private set; }
 
+        [Obsolete]
         public Login(string name)
         {
             Name = name;
@@ -21,6 +22,11 @@ namespace MyMvc.Models
             User = db.FindUserByLogin(name);
             if (User != null)
                 Device = db.Devices.FirstOrDefault(x => x.UserId == User.Id);
+        }
+
+        public Login(int deviceId)
+        {
+            var db = ModelContext.Instance;
         }
     }
 }

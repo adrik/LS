@@ -31,28 +31,21 @@ namespace MyMvc.Models.DB
         public DbSet<DbUser> Users { get; set; }
         public DbSet<DbDevice> Devices { get; set; }
         public DbSet<DbLocation> Locations { get; set; }
-        public IQueryable<DbLocation> RecentLocations
-        {
-            get
-            {
-                //return from l in this.Locations
-                //       group l by l.DeviceId into g
-                //       select g.OrderByDescending(x => x.Time).FirstOrDefault();
-                return this.Locations;
-            }
-        }
-        public DbSet<DbRelation> Relations { get; set; }
         public DbSet<DbThumbnail> Thumbnails { get; set; }
-        public DbSet<DbUserMessage> UserMessages { get; set; }
+
+        public DbSet<DbDeviceRelation> DeviceRelations { get; set; }
+        public DbSet<DbDeviceMessage> DeviceMessages { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbUser>().ToTable("tblUsers");
             modelBuilder.Entity<DbDevice>().ToTable("tblDevices");
             modelBuilder.Entity<DbLocation>().ToTable("tblLocations");
-            modelBuilder.Entity<DbRelation>().ToTable("tblRelations");
             modelBuilder.Entity<DbThumbnail>().ToTable("tblThumbnails");
-            modelBuilder.Entity<DbUserMessage>().ToTable("tblUserMessages");
+
+            modelBuilder.Entity<DbDeviceRelation>().ToTable("tblDeviceRelations");
+            modelBuilder.Entity<DbDeviceMessage>().ToTable("tblDeviceMessages");
         }
 
 

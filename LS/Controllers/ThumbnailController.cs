@@ -15,7 +15,7 @@ namespace MyMvc.Controllers
             var db = ModelContext.Instance;
             int userId = WebSecurity.CurrentUserId;
             var icon = (from t in db.Thumbnails
-                        where t.UserId == id && (id == userId || db.Relations.Any(x => x.UserId == userId && x.ContactId == id))
+                        where t.UserId == id //&& (id == userId || db.Relations.Any(x => x.UserId == userId && x.ContactId == id))
                         select t).FirstOrDefault();
             if (icon == null)
             {

@@ -8,18 +8,21 @@ namespace MyMvc.Models.Messages
     {
         public void Process(Login login, DataMessage msg, IList<DataMessage> response)
         {
-            try
+            if (login.Device != null)
             {
-                int contactId = int.Parse(msg.c.Trim());
-                bool disconnected = UserFunctions.Disconnect(login.Device, contactId);
-
-                if (disconnected)
+                try
                 {
-                    DataMessage message = new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.RequestClientDisconnect };
-                    Messages.SaveMessageForDevice(contactId, message);
+                    int contactId = int.Parse(msg.c.Trim());
+                    bool disconnected = UserFunctions.Disconnect(login.Device, contactId);
+
+                    if (disconnected)
+                    {
+                        DataMessage message = new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.ClientDisconnect };
+                        Messages.SaveMessageForDevice(contactId, message);
+                    }
                 }
+                catch (FormatException) { }
             }
-            catch (FormatException) { }
         }
     }
 }

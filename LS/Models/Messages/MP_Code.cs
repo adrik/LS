@@ -7,10 +7,13 @@ namespace MyMvc.Models.Messages
     {
         public void Process(Login login, DataMessage msg, IList<DataMessage> response)
         {
-            string code = UserFunctions.MakeNewCode();
+            if (login.Device != null)
+            {
+                string code = UserFunctions.MakeNewCode();
 
-            UserFunctions.SetDeviceCode(login.Device.Id, code);
-            response.Add(msg.Respond(code));
+                UserFunctions.SetDeviceCode(login.Device, code);
+                response.Add(msg.Respond(code));
+            }
         }
     }
 }

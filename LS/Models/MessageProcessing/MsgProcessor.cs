@@ -16,19 +16,19 @@ namespace MyMvc.Models.MessageProcessing
         private static ContactLocationsMsgProcessor _contactLocationsMP = new ContactLocationsMsgProcessor();
         private static CodeMsgProcessor _codeMP = new CodeMsgProcessor();
 
-        private static IMsgProcessor GetProcessor(MessageType type)
+        private static IMsgProcessor GetProcessor(QueuedMessageType type)
         {
             switch (type)
             {
-                case MessageType.RequestUpdateLocation:
+                case QueuedMessageType.RequestUpdateLocation:
                     return _updateLocationMP;
-                case MessageType.RequestServerConnect:
+                case QueuedMessageType.RequestServerConnect:
                     return _serverConnectMP;
-                case MessageType.RequestServerDisconnect:
+                case QueuedMessageType.RequestServerDisconnect:
                     return _serverDisconnectMP;
-                case MessageType.RequestCode:
+                case QueuedMessageType.RequestCode:
                     return _codeMP;
-                case MessageType.RequestContactLocations:
+                case QueuedMessageType.RequestContactLocations:
                     return _contactLocationsMP;
                 default:
                     throw new ArgumentException();
@@ -48,9 +48,9 @@ namespace MyMvc.Models.MessageProcessing
         public static MessageResponse[] Process(Login login, QueuedMessage[] messages)
         {
             // filter messages and take only last location update
-            var locationUpdates = messages.Where(x => x.type == MessageType.RequestUpdateLocation).ToArray();
+            var locationUpdates = messages.Where(x => x.type == QueuedMessageType.RequestUpdateLocation).ToArray();
 
-            List<QueuedMessage> filtered = messages.Where(x => x.type != MessageType.RequestUpdateLocation).ToList();
+            List<QueuedMessage> filtered = messages.Where(x => x.type != QueuedMessageType.RequestUpdateLocation).ToList();
             if (locationUpdates.Length > 0)
                 filtered.Add(locationUpdates.Last());
 
@@ -73,11 +73,21 @@ namespace MyMvc.Models.MessageProcessing
 
                 switch (msg.t)
                 {
-                    case MessageType.RequestClientConnect:
-                        result.Add(new QueuedMessage() { id = 0, content = ServerConnectMsgProcessor.FormatUserInfo(device.UserId), type = msg.t });
+                    case MessageType.ClientConnect:
+                        result.Add(new QueuedMessage()
+                        {
+                            id = 0,
+                            content = ServerConnectMsgProcessor.FormatUserInfo(device.UserId),
+                            type = QueuedMessageType.RequestClientConnect
+                        });
                         break;
-                    case MessageType.RequestClientDisconnect:
-                        result.Add(new QueuedMessage() { id = 0, content = UserFunctions.SelectUser(device.UserId).Login, type = msg.t });
+                    case MessageType.ClientDisconnect:
+                        result.Add(new QueuedMessage()
+                        {
+                            id = 0,
+                            content = UserFunctions.SelectUser(device.UserId).Login,
+                            type = QueuedMessageType.RequestClientDisconnect
+                        });
                         break;
                 }
             }

@@ -33,7 +33,7 @@ namespace MyMvc.Models.Messages
         {
             var db = Models.DB.ModelContext.Instance;
 
-            if (login.User != null && db.DeviceMessages.Any(x => x.DeviceId == login.Device.Id))
+            if (login.Device != null && db.DeviceMessages.Any(x => x.DeviceId == login.Device.Id))
             {
                 lock (msgLock)
                 {

@@ -20,7 +20,7 @@ namespace MyMvc.Models.MessageProcessing
             bool disconnected = UserFunctions.Disconnect(login.Device, contactDevice.Id);
 
             if (disconnected)
-                Messages.Messages.SaveMessageForDevice(contactDevice.Id, new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.RequestClientDisconnect });
+                Messages.Messages.SaveMessageForDevice(contactDevice.Id, new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.ClientDisconnect });
 
             MessageResponse resp = disconnected ? MessageResponse.OK(msg.id) : MessageResponse.Error(msg.id, NonexistentUserMessage);
             return new[] { resp };

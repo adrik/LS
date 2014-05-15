@@ -74,13 +74,27 @@ namespace MyMvc.Models
         }
 
         // --- V2 ---
+        public static Tuple<DbDevice, DbLocation>[] SelelectContacts(DbDevice device)
+        {
+            var db = ModelContext.Instance;
+
+            var query = (
+                from r in db.DeviceRelations
+                join d in db.Devices on r.OtherDeviceId equals d.Id
+                from l in db.Locations.Where(x => x.DeviceId == d.Id).DefaultIfEmpty()
+                where r.DeviceId == device.Id && r.GroupId == 1
+                select new { Device = d, Location = l }).ToArray();
+
+            return query.Select(x => new Tuple<DbDevice, DbLocation>(x.Device, x.Location)).ToArray();
+        }
+
         public static DbLocation[] SelectContactLocations(DbDevice device)
         {
             var db = ModelContext.Instance;
 
             var query =
                 from r in db.DeviceRelations
-                join l in db.Locations on r.OtherDeviceId equals l.DeviceId
+                join l in db.Locations.AsNoTracking() on r.OtherDeviceId equals l.DeviceId
                 where r.DeviceId == device.Id && r.GroupId == 1 &&
                     (!device.LastUpdate.HasValue || l.Time > device.LastUpdate.Value)
                 select l;
@@ -101,6 +115,17 @@ namespace MyMvc.Models
         public static DbUser SelectUser(int userId)
         {
             return ModelContext.Instance.Users.FirstOrDefault(x => x.Id == userId);
+        }
+
+        public static DbDevice SelectAnyDevice(string login)
+        {
+            var db = ModelContext.Instance;
+
+            return (
+                from u in db.Users
+                join d in db.Devices on u.Id equals d.UserId
+                where u.Login == login
+                select d).FirstOrDefault();
         }
         // ----------
 
@@ -204,33 +229,29 @@ namespace MyMvc.Models
             return code;
         }
 
-        public static int Register(string login, string name)
-        {
-            //var db = ModelContext.Instance;
-
-            //var user = db.FindUserByLogin(login);
-            //if (user == null)
-            //{
-            //    user = new DbUser() { Login = name, Name = name, Code = string.Empty, PasswordHash = string.Empty };
-            //    db.Users.Add(user);
-            //    db.SaveChanges();
-            //}
-
-            //var device = new DbDevice() { DeviceKey = string.Empty, Name = name, Status = 1, UserId = user.Id };
-            //db.Devices.Add(device);
-            //db.SaveChanges();
-
-            //return device.Id;
-
-            return 0;
-        }
-
-        public static void SetDeviceCode(int deviceId, string code)
+        public static DbDevice Register(string login, string name)
         {
             var db = ModelContext.Instance;
 
-            db.Devices.Single(x => x.Id == deviceId).Code = code;
+            var user = db.FindUserByLogin(login);
+            if (user == null)
+            {
+                user = new DbUser() { Login = login, Name = login, PasswordHash = string.Empty };
+                db.Users.Add(user);
+                db.SaveChanges();
+            }
+
+            var device = new DbDevice() { DeviceKey = string.Empty, Name = name, Code = MakeNewCode(), Status = 1, UserId = user.Id };
+            db.Devices.Add(device);
             db.SaveChanges();
+
+            return device;
+        }
+
+        public static void SetDeviceCode(DbDevice device, string code)
+        {
+            device.Code = code;
+            ModelContext.Instance.SaveChanges();
         }
 
         //[Obsolete]
@@ -336,7 +357,7 @@ namespace MyMvc.Models
             var user = new DbUser() { Login = login, Name = login, PasswordHash = string.Empty };
             db.Users.Add(user);
             db.SaveChanges();
-            var device = new DbDevice() { DeviceKey = login, Name = login + " device", Code = code, Status = 1, UserId = user.Id };
+            var device = new DbDevice() { DeviceKey = string.Empty, Name = login, Code = code, Status = 1, UserId = user.Id };
             db.Devices.Add(device);
             db.SaveChanges();
 

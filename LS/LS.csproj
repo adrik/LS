@@ -177,6 +177,8 @@
     <Compile Include="Handlers\ThumbnailHandler.cs" />
     <Compile Include="Models\B64.cs" />
     <Compile Include="Models\CodeGen.cs" />
+    <Compile Include="Models\Messages\MP_Upgrade.cs" />
+    <Compile Include="Models\QueuedMessageType.cs" />
     <Compile Include="Models\DB\DbDeviceMessage.cs" />
     <Compile Include="Models\DB\DbDeviceRelation.cs" />
     <Compile Include="Models\DB\DbContext.cs" />
@@ -195,6 +197,7 @@
     <Compile Include="Models\Messages\MP_Code.cs" />
     <Compile Include="Models\Messages\MP_ContactLocations.cs" />
     <Compile Include="Models\Messages\IMsgProcessor.cs" />
+    <Compile Include="Models\Messages\MP_Register.cs" />
     <Compile Include="Models\Messages\MsgFormatter.cs" />
     <Compile Include="Models\Messages\Messages.cs" />
     <Compile Include="Models\Messages\MP_ServerConnect.cs" />

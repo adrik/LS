@@ -26,7 +26,7 @@ namespace MyMvc.Models
 
         public Login(int deviceId)
         {
-            var db = ModelContext.Instance;
+            Device = UserFunctions.SelectDevice(deviceId);
         }
     }
 }

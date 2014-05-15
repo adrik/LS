@@ -8,12 +8,15 @@ namespace MyMvc.Models.Messages
     {
         public void Process(Login login, DataMessage msg, IList<DataMessage> response)
         {
-            try
+            if (login.Device != null)
             {
-                var location = MsgFormatter.ParseLocation(msg.c);
-                UserFunctions.UpdateLocation(login.Device.Id, location);
+                try
+                {
+                    var location = MsgFormatter.ParseLocation(msg.c);
+                    UserFunctions.UpdateLocation(login.Device.Id, location);
+                }
+                catch (FormatException) { }
             }
-            catch (FormatException) { }
         }
     }
 }

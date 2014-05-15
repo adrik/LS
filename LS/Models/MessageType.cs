@@ -5,14 +5,18 @@ using System.Web;
 
 namespace MyMvc.Models
 {
+    [Flags]
     public enum MessageType
     {
-        RequestCode = 0,
-        RequestUpdateLocation = 1,
-        RequestContactLocations = 3,
-        RequestServerConnect = 4,
-        RequestClientConnect = 5,
-        RequestServerDisconnect = 2,
-        RequestClientDisconnect = 6
+        ClientConnect = 1,
+        ClientDisconnect = 2,
+        
+        Register = 16,
+        Code = 32,
+        UpdateLocation = 64,
+        ContactLocations = 128,
+        ServerConnect = 256,
+        ServerDisconnect = 512,
+        Upgrade = 1024
     }
 }

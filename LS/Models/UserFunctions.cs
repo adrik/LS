@@ -214,7 +214,7 @@ namespace MyMvc.Models
             }
             else
             {
-                login.Device.Code = code;
+                login.Device.Code = code; // CODE IS CACHED!
                 db.SaveChanges();
             }
         }
@@ -250,7 +250,7 @@ namespace MyMvc.Models
 
         public static void SetDeviceCode(DbDevice device, string code)
         {
-            device.Code = code;
+            device.Code = code; // CODE IS CACHED!
             ModelContext.Instance.SaveChanges();
         }
 

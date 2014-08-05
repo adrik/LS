@@ -5,17 +5,11 @@ using System.Web;
 
 namespace MyMvc.Models.Messages
 {
-    public class MsgProcessorBroker
+    public class MsgProcessorBrokerV1 : IMsgProcessorBroker
     {
-        private static Lazy<MsgProcessorBroker> _instance =
-            new Lazy<MsgProcessorBroker>(() => new MsgProcessorBroker());
-
-        public static MsgProcessorBroker Instance { get { return _instance.Value; } }
-
-
         private IMsgProcessor[] _processors;
 
-        private MsgProcessorBroker()
+        public MsgProcessorBrokerV1()
         {
             _processors = new IMsgProcessor[] {
                 new MP_Register() ,

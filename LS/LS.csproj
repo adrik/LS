@@ -177,7 +177,15 @@
     <Compile Include="Handlers\ThumbnailHandler.cs" />
     <Compile Include="Models\B64.cs" />
     <Compile Include="Models\CodeGen.cs" />
+    <Compile Include="Models\Messages\IBulkMsgProcessor.cs" />
+    <Compile Include="Models\Messages\IMsgProcessorBroker.cs" />
+    <Compile Include="Models\Messages\MPFactory.cs" />
     <Compile Include="Models\Messages\MP_Upgrade.cs" />
+    <Compile Include="Models\Messages\MsgProcessor.cs" />
+    <Compile Include="Models\Messages\V2\MP_RegisterV2.cs" />
+    <Compile Include="Models\Messages\V2\MP_ServerConnectV2.cs" />
+    <Compile Include="Models\Messages\V2\MP_UpgradeV2.cs" />
+    <Compile Include="Models\Messages\V2\MsgProcessorBrokerV2.cs" />
     <Compile Include="Models\QueuedMessageType.cs" />
     <Compile Include="Models\DB\DbDeviceMessage.cs" />
     <Compile Include="Models\DB\DbDeviceRelation.cs" />
@@ -203,7 +211,7 @@
     <Compile Include="Models\Messages\MP_ServerConnect.cs" />
     <Compile Include="Models\Messages\MP_ServerDisconnect.cs" />
     <Compile Include="Models\Messages\MP_UpdateLocation.cs" />
-    <Compile Include="Models\Messages\MsgProcessorBroker.cs" />
+    <Compile Include="Models\Messages\MsgProcessorBrokerV1.cs" />
     <Compile Include="Models\MessageType.cs" />
     <Compile Include="Models\MyMembershipProvider.cs" />
     <Compile Include="Models\DB\DbThumbnail.cs" />

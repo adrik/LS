@@ -6,7 +6,10 @@ namespace MyMvc.Services.DataContracts.V2
     public class RequestData
     {
         [DataMember]
-        public string i { get; set; }
+        public int i { get; set; }
+
+        [DataMember]
+        public int v { get; set; }
 
         [DataMember]
         public DataMessage[] m { get; set; }

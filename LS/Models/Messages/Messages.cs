@@ -11,16 +11,6 @@ namespace MyMvc.Models.Messages
     {
         private static object msgLock = new object();
 
-
-        public static void Process(Login login, IEnumerable<DataMessage> messages, IList<DataMessage> response)
-        {
-            foreach (DataMessage msg in messages)
-            {
-                IMsgProcessor processor = MsgProcessorBroker.Instance[msg.t];
-                processor.Process(login, msg, response);
-            }
-        }
-
         public static void SaveMessageForDevice(int deviceId, DataMessage msg)
         {
             var db = Models.DB.ModelContext.Instance;

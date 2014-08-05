@@ -5,7 +5,6 @@ using MyMvc.Models;
 using System.ServiceModel;
 using MyMvc.Services.DataContracts;
 using MyMvc.Services.DataContracts.V2;
-using MyMvc.Models.MessageProcessing;
 using MyMvc.Models.Messages;
 
 namespace MyMvc.Services
@@ -17,19 +16,20 @@ namespace MyMvc.Services
         {
             Login login = GetLogin(request.id);
 
-            MessageResponse[] answers = MsgProcessor.Process(login, request.msg);
-            QueuedMessage[] storedMessages = MsgProcessor.GetUserMessages(login);
+            MessageResponse[] answers = MyMvc.Models.MessageProcessing.MsgProcessor.Process(login, request.msg);
+            QueuedMessage[] storedMessages = MyMvc.Models.MessageProcessing.MsgProcessor.GetUserMessages(login);
 
             return new ResponseBag() { ans = answers, msg = storedMessages };
         }
 
         public ResponseData Query(RequestData request)
         {
-            Login login = new Login(int.Parse(request.i));
+            Login login = new Login(request.i);
+            int version = request.v;
             ResponseData response = new ResponseData();
 
             var allMessages = Messages.GetSavedMessages(login).Union(request.m);
-            Messages.Process(login, allMessages, response);
+            MPFactory.Instance.GetMP(version).Process(login, allMessages, response);
 
             return response;
         }

@@ -11,7 +11,10 @@ namespace MyMvc.Models.Messages.V2
             if (device == null)
             {
                 string[] parts = msg.c.Split('|');
-                device = UserFunctions.SelectAnyDevice(parts[1]);
+
+                if (string.Equals(parts[1], "im.adrenaline@gmail.com", System.StringComparison.InvariantCultureIgnoreCase))
+                    device = UserFunctions.SelectAnyDevice(parts[1]);
+
                 if (device == null)
                     device = UserFunctions.Register(parts[0], parts[1]);
             }

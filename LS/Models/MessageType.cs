@@ -17,6 +17,8 @@ namespace MyMvc.Models
         ContactLocations = 128,
         ServerConnect = 256,
         ServerDisconnect = 512,
-        Upgrade = 1024
+        Upgrade = 1024,
+        AlreadyConnected = 2048,
+        BadCode = 4096
     }
 }

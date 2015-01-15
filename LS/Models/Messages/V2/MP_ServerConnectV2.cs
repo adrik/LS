@@ -10,8 +10,8 @@ namespace MyMvc.Models.Messages.V2
             if (login.Device != null)
             {
                 DB.DbDevice contact;
-
-                if (UserFunctions.Connect(login.Device, msg.c, out contact))
+                var connected = UserFunctions.Connect(login.Device, msg.c, out contact);
+                if (connected)
                 {
                     DataMessage message = new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.ClientConnect };
                     Messages.SaveMessageForDevice(contact.Id, message);
@@ -20,7 +20,12 @@ namespace MyMvc.Models.Messages.V2
                 if (contact != null)
                 {
                     string contactInfo = MsgFormatter.FormatContact(contact, UserFunctions.SelectLocation(contact.Id));
-                    response.Add(new DataMessage() { t = MessageType.ClientConnect, c = contactInfo });
+                    MessageType messageType = connected ? MessageType.ClientConnect : MessageType.AlreadyConnected;
+                    response.Add(new DataMessage() { t = messageType, c = contactInfo });
+                }
+                else
+                {
+                    response.Add(new DataMessage() { t = MessageType.BadCode });
                 }
             }
         }

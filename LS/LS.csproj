@@ -182,6 +182,7 @@
     <Compile Include="Handlers\ThumbnailHandler.cs" />
     <Compile Include="Models\B64.cs" />
     <Compile Include="Models\CodeGen.cs" />
+    <Compile Include="Models\DB\DbLog.cs" />
     <Compile Include="Models\Messages\IBulkMsgProcessor.cs" />
     <Compile Include="Models\Messages\IMsgProcessorBroker.cs" />
     <Compile Include="Models\Messages\MPFactory.cs" />

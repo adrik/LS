@@ -321,6 +321,11 @@ namespace MyMvc.Models
                     return true;
                 }
             }
+            else
+            {
+                db.Logs.Add(new DbLog() { ActorId = device.Id, Message = string.Format("Wrong code \"{1}\" entered by {0}", code, device.Name) });
+                db.SaveChanges();
+            }
 
             return false;
         }

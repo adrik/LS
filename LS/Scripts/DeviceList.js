@@ -35,8 +35,8 @@
 
 
                 $q.all([
-                    ws.getUserInfo(all(add)),
-                    ws.getContactsInfo(all(add))
+                    //ws.getUserInfo(all(add)),
+                    ws.getMasterContactsInfo('vycherno@gmail.com', all(add))
                 ]).then(function () {
                     $root.$broadcast('device-focus-all');
                 });
@@ -46,7 +46,7 @@
 //                                });
 
                 var timeoutId = $interval(function () {
-                    ws.getAllLocations(all(update));
+                    //ws.getAllLocations(all(update));
                 }, 30000);
                 element.on('$destroy', function () {
                     $interval.cancel(timeoutId);

@@ -19,7 +19,7 @@ namespace MyMvc.Services
     public class Web
     {
         [OperationContract]
-        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        [WebGet(ResponseFormat = WebMessageFormat.Json, RequestFormat = WebMessageFormat.Json)]
         public DeviceInfo[] GetUserInfo()
         {
             return 

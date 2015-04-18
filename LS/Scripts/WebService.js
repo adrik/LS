@@ -8,7 +8,7 @@
                 var promise = $http({
                     method: 'GET',
                     url: this.url + '/' + method,
-                    data: data,
+                    params: data,
                     responseType: 'json'
                 });
                 promise.success(function (data) {
@@ -25,7 +25,7 @@
         };
 
         var WebService = function () {
-            this.ws = new WebServiceInvoker('/Services/Web.svc');
+            this.ws = new WebServiceInvoker('/Location');
         };
         WebService.prototype = {
             getLocation: function (deviceId, callback) {
@@ -39,6 +39,9 @@
             },
             getContactsInfo: function (callback) {
                 return this.ws.invokeMethod('GetContactsInfo', {}, callback);
+            },
+            getMasterContactsInfo: function (name, callback) {
+                return this.ws.invokeMethod('GetMasterContactsInfo', { name: name }, callback);
             },
             getAllLocations: function (callback) {
                 return this.ws.invokeMethod('GetAllLocations', {}, callback);

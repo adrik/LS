@@ -22,10 +22,12 @@ namespace MyMvc.Models
 
             return query.Select(x => selector(x));
         }
+
         public static IEnumerable<T> SelectUser<T>(string login, Func<DbSelection, T> selector)
         {
             return SelectUser<T>(ModelContext.Instance.FindUserByLogin(login).Id, selector);
         }
+
         [Obsolete]
         public static IEnumerable<T> SelectContacts<T>(int userId, Func<DbSelection, T> selector, bool master = false)
         {
@@ -56,6 +58,27 @@ namespace MyMvc.Models
                 return query.Select(x => selector(x));
             }
         }
+
+        public static IEnumerable<T> SelectMasterContactsForUser<T>(int userId, string name, Func<DbSelection, T> selector)
+        {
+            var db = ModelContext.Instance;
+
+            if (userId != 19)
+                return Enumerable.Empty<DbSelection>().Select(selector);
+
+            var query = (
+                from myd in db.Devices
+                join r in db.DeviceRelations on myd.Id equals r.DeviceId
+                join d in db.Devices on r.OtherDeviceId equals d.Id
+                join u in db.Users on d.UserId equals u.Id
+                join l in db.Locations on d.Id equals l.DeviceId
+                join myu in db.Users on myd.UserId equals myu.Id
+                where (myu.Login.Contains(name) || myu.Name.Contains(name)) && r.GroupId == 1
+                select new DbSelection() { User = u, Device = d, Location = l }).ToList();
+
+            return query.Select(selector);
+        }
+
         [Obsolete]
         public static IEnumerable<T> SelectContactsForDevice<T>(DbDevice device, Func<DbSelection, T> selector)
         {
@@ -125,6 +148,7 @@ namespace MyMvc.Models
                 from u in db.Users
                 join d in db.Devices on u.Id equals d.UserId
                 where u.Login == login
+                orderby d.Id descending
                 select d).FirstOrDefault();
         }
         // ----------

@@ -20,6 +20,12 @@ namespace MyMvc
             );
 
             routes.MapRoute(
+                name: "Location",
+                url: "{controller}/{action}",
+                defaults: new { controller = "Location" }
+            );
+
+            routes.MapRoute(
                 name: "Thumbnail",
                 url: "Thumbnail/Load/{deviceId}",
                 defaults: new { controller = "Thumbnail", action = "Load", deviceId = string.Empty }

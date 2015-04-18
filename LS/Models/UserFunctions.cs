@@ -323,7 +323,7 @@ namespace MyMvc.Models
             }
             else
             {
-                db.Logs.Add(new DbLog() { ActorId = device.Id, Message = string.Format("Wrong code \"{1}\" entered by {0}", code, device.Name), Timestamp = DateTime.UtcNow });
+                db.Logs.Add(new DbLog() { ActorId = device.Id, Message = string.Format("Wrong code \"{0}\" entered by {1}", code, device.Name), Timestamp = DateTime.UtcNow });
                 db.SaveChanges();
             }
 

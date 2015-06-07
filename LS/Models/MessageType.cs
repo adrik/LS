@@ -19,6 +19,7 @@ namespace MyMvc.Models
         ServerDisconnect = 512,
         Upgrade = 1024,
         AlreadyConnected = 2048,
-        BadCode = 4096
+        BadCode = 4096,
+        Rate = 8192
     }
 }

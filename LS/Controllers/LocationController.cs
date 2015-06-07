@@ -46,6 +46,23 @@ namespace MyMvc.Controllers
             };
         }
 
+        public ActionResult GetLocationsForDemo(int skip, int take)
+        {
+            var data = 
+                UserFunctions.SelectLocationsForDemo(WebSecurity.CurrentUserId)
+                    .OrderBy(x => x.DeviceId)
+                    .Select(x => new { lat = x.Lat, lng = x.Lng })
+                    .Skip(skip)
+                    .Take(take)
+                    .ToArray();
+
+            return new JsonResult()
+            {
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                Data = data
+            };
+        }
+
         public ActionResult GetAllLocations()
         {
             return new JsonResult()

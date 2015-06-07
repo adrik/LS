@@ -20,7 +20,8 @@ namespace MyMvc.Models.Messages.V2
                 new MP_ServerDisconnect(),
                 new MP_ClientConnect(),
                 new MP_ClientDisconnect(),
-                new MP_UpgradeV2()
+                new MP_UpgradeV2(),
+                new MP_RateV2()
             };
         }
 
@@ -48,6 +49,8 @@ namespace MyMvc.Models.Messages.V2
                         return _processors[7];
                     case MessageType.Upgrade:
                         return _processors[8];
+                    case MessageType.Rate:
+                        return _processors[9];
                     default:
                         return null;
                 }

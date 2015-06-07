@@ -1,0 +1,99 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html ng-app="way-app">
+<head>
+    <meta name="viewport" content="width=device-width, height=device-height" />
+    <title>Index</title>
+    @Styles.Render("~/Content/css")
+    <script type="text/javascript" src="~/Scripts/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/marker-cluster.js"></script>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+</head>
+<body>
+    <div id="container">
+        <div id="map"></div>
+    </div>
+
+    <script type="text/javascript">
+        var optimalZoom = 2;
+
+        var myOptions = {
+            zoom: optimalZoom,
+            center: new google.maps.LatLng(0, 0),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var $map = $('#map');
+        var map = new google.maps.Map($map[0], myOptions);
+
+        var $win = $(window);
+
+        var setElementHeight = function () {
+            $map.height($win.height());
+        };
+
+        setElementHeight();
+        $win.on('resize', setElementHeight);
+
+        WebServiceInvoker = function (url) {
+            this.url = url;
+        };
+        WebServiceInvoker.prototype = {
+            invokeMethod: function (method, data, callback) {
+                var promise = $.ajax({
+                    method: 'GET',
+                    url: this.url + '/' + method,
+                    data: data,
+                    responseType: 'json'
+                });
+                promise.success(function (data) {
+                    if (callback) {
+                        callback(data);
+                    }
+                });
+                promise.error(this._invocationFailed);
+                return promise;
+            },
+            _invocationFailed: function (data, status) {
+                console.log('Request failed with code: ' + status);
+            }
+        };
+
+        var WebService = function () {
+            this.ws = new WebServiceInvoker('/Location');
+        };
+        WebService.prototype = {
+            getLocationsForDemo: function (skip, take, callback) {
+                return this.ws.invokeMethod('GetLocationsForDemo', { skip: skip, take: take }, callback);
+            }
+        };
+
+        var ws = new WebService();
+
+        var pageSize = 5000, page = 0, markers = [];
+
+        (function loadLocationsPage() {
+            ws.getLocationsForDemo(page * pageSize, pageSize, function (result) {
+                $.each(result, function (i, location) {
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: new google.maps.LatLng(location.lat, location.lng),
+                    });
+
+                    markers.push(marker);
+                });
+
+                if (result.length === pageSize) {
+                    page++;
+                    setTimeout(loadLocationsPage, 0);
+                } else {
+                    var markerCluster = new MarkerClusterer(map, markers);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -13,12 +13,19 @@ namespace MyMvc.Controllers
         public ActionResult Index()
         {
             if (User.Identity.IsAuthenticated)
-                if (WebSecurity.CurrentUserId == 19)
-                    return View("Master");
-                else
-                    return View();
-            else
-                return View("Login");
+                return IsMaster() 
+                    ? View("Master")
+                    : View();
+            
+            return View("Login");
+        }
+
+        public ActionResult Demo()
+        {
+            if (User.Identity.IsAuthenticated && IsMaster())
+                return View();
+         
+            return RedirectToAction("Index");
         }
 
         public ActionResult DeviceTemplate()
@@ -54,6 +61,11 @@ namespace MyMvc.Controllers
             //db.SaveChanges();
 
             //return RedirectToAction("Index");
+        }
+
+        private static bool IsMaster()
+        {
+            return WebSecurity.CurrentUserId == 19;
         }
     }
 }

@@ -79,6 +79,19 @@ namespace MyMvc.Models
             return query.Select(selector);
         }
 
+        public static IQueryable<DbLocation> SelectLocationsForDemo(int userId)
+        {
+            var db = ModelContext.Instance;
+
+            if (userId != 19)
+                return Enumerable.Empty<DbLocation>().AsQueryable();
+
+            return
+                from d in db.Devices
+                join l in db.Locations on d.Id equals l.DeviceId
+                select l;
+        }
+
         [Obsolete]
         public static IEnumerable<T> SelectContactsForDevice<T>(DbDevice device, Func<DbSelection, T> selector)
         {
@@ -396,6 +409,13 @@ namespace MyMvc.Models
         public static bool IsCodeTaken(string code)
         {
             return ModelContext.Instance.Devices.Any(x => x.Code == code);
+        }
+
+        public static void SaveUserRating(DbDevice device, int rating)
+        {
+            var db = ModelContext.Instance;
+            db.Ratings.Add(new DbRating() { ActorId = device.Id, Value = rating, Timestamp = DateTime.UtcNow });
+            db.SaveChanges();
         }
     }
 }

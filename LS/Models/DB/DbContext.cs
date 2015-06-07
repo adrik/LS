@@ -33,6 +33,7 @@ namespace MyMvc.Models.DB
         public DbSet<DbLocation> Locations { get; set; }
         public DbSet<DbThumbnail> Thumbnails { get; set; }
         public DbSet<DbLog> Logs { get; set; }
+        public DbSet<DbRating> Ratings { get; set; }
 
         public DbSet<DbDeviceRelation> DeviceRelations { get; set; }
         public DbSet<DbDeviceMessage> DeviceMessages { get; set; }
@@ -49,6 +50,7 @@ namespace MyMvc.Models.DB
             modelBuilder.Entity<DbDeviceMessage>().ToTable("tblDeviceMessages");
 
             modelBuilder.Entity<DbLog>().ToTable("tblLog");
+            modelBuilder.Entity<DbRating>().ToTable("tblRating");
         }
 
 

@@ -21,7 +21,8 @@ namespace MyMvc.Models.Messages.V2
                 new MP_ClientConnect(),
                 new MP_ClientDisconnect(),
                 new MP_UpgradeV2(),
-                new MP_RateV2()
+                new MP_RateV2(),
+                new MP_AcceptGcmTokenV2()
             };
         }
 
@@ -51,6 +52,8 @@ namespace MyMvc.Models.Messages.V2
                         return _processors[8];
                     case MessageType.Rate:
                         return _processors[9];
+                    case MessageType.AcceptGcmToken:
+                        return _processors[10];
                     default:
                         return null;
                 }

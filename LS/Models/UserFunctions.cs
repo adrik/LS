@@ -417,5 +417,11 @@ namespace MyMvc.Models
             db.Ratings.Add(new DbRating() { ActorId = device.Id, Value = rating, Timestamp = DateTime.UtcNow });
             db.SaveChanges();
         }
+
+        public static void SetGcmToken(DbDevice device, string token)
+        {
+            device.GcmToken = token;
+            ModelContext.Instance.SaveChanges();
+        }
     }
 }

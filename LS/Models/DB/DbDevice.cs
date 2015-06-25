@@ -15,5 +15,6 @@ namespace MyMvc.Models.DB
         public string Code { get; set; }
         public int Status { get; set; }
         public DateTime? LastUpdate { get; set; }
+        public string GcmToken { get; set; }
     }
 }

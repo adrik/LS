@@ -20,6 +20,7 @@ namespace MyMvc.Models
         Upgrade = 1024,
         AlreadyConnected = 2048,
         BadCode = 4096,
-        Rate = 8192
+        Rate = 8192,
+        AcceptGcmToken = 16384
     }
 }

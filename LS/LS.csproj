@@ -189,6 +189,7 @@
     <Compile Include="Models\Messages\MPFactory.cs" />
     <Compile Include="Models\Messages\MP_Upgrade.cs" />
     <Compile Include="Models\Messages\MsgProcessor.cs" />
+    <Compile Include="Models\Messages\V2\MP_AcceptGcmTokenV2.cs" />
     <Compile Include="Models\Messages\V2\MP_RateV2.cs" />
     <Compile Include="Models\Messages\V2\MP_RegisterV2.cs" />
     <Compile Include="Models\Messages\V2\MP_ServerConnectV2.cs" />
@@ -408,6 +409,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\Demo.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\Localhost.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

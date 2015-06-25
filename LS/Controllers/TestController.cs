@@ -17,7 +17,7 @@ namespace MyMvc.Controllers
 
         public ActionResult Test()
         {
-            return new RedirectResult("/");
+            //return new RedirectResult("/");
 
             //long half = 64 * 64 * 64;
             //long max = half * half;
@@ -34,7 +34,7 @@ namespace MyMvc.Controllers
 
             //ViewBag.Num = Enumerable.Range(0, 120).Select(x => CodeGen.Next());
 
-            //return View();
+            return View();
         }
 
         public ActionResult SendGcmMessage(string receiver, string message)

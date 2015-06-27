@@ -36,7 +36,7 @@
 
                 $q.all([
                     //ws.getUserInfo(all(add)),
-                    ws.getMasterContactsInfo('vycherno@gmail.com', all(add))
+                    ws.getMasterContactsInfo('', all(add))
                 ]).then(function () {
                     $root.$broadcast('device-focus-all');
                 });

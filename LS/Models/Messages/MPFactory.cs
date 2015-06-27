@@ -10,7 +10,13 @@ namespace MyMvc.Models.Messages
     {
         private static Lazy<MPFactory> _instance = new Lazy<MPFactory>(() => new MPFactory());
         private IBulkMsgProcessor[] _processors;
+        private RequestHandler _requestHandler = new RequestHandler();
 
+        public RequestHandler RequestHandler
+        {
+            get { return _requestHandler; }
+        }
+        
         private MPFactory()
         {
             _processors = new[] { new MsgProcessor(new MsgProcessorBrokerV1()), null, new MsgProcessor(new MsgProcessorBrokerV2()) };

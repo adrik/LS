@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MyMvc.Services.DataContracts.V2;
+using System;
 
 namespace MyMvc.Models.Messages.V2
 {
@@ -9,12 +10,23 @@ namespace MyMvc.Models.Messages.V2
         {
             if (login.Device != null)
             {
+                Guid clientRelationKey;
+                Guid contactRelationKey;
                 DB.DbDevice contact;
-                var connected = UserFunctions.Connect(login.Device, msg.c, out contact);
+                var connected = UserFunctions.Connect(login.Device, msg.c, out contact, out clientRelationKey, out contactRelationKey);
+
                 if (connected)
                 {
+                    if (contact.GcmToken != null)
+                    {
+                        var location = UserFunctions.SelectLocation(login.Device.Id);
+                        string info = MyMvc.Models.RequestHandling.Formatter.FormatContact(contactRelationKey, login.Device, location);
+
+                        Gcm.SendData(contact.GcmToken, new ServerMessage { t = ServerMessageType.Connected, c = info });
+                    }
+
                     DataMessage message = new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.ClientConnect };
-                    Messages.SaveMessageForDevice(contact.Id, message);
+                    MessageSystem.SaveMessageForDevice(contact.Id, message);
                 }
 
                 if (contact != null)

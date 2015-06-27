@@ -17,10 +17,11 @@ namespace MyMvc.Models.MessageProcessing
             DB.DbUser contact = DB.ModelContext.Instance.FindUserByLogin(msg.content.Trim());
             DB.DbDevice contactDevice = DB.ModelContext.Instance.Devices.FirstOrDefault(x => x.UserId == contact.Id);
 
-            bool disconnected = UserFunctions.Disconnect(login.Device, contactDevice.Id);
+            Guid contactRelationToken;
+            bool disconnected = UserFunctions.Disconnect(login.Device, contactDevice.Id, out contactRelationToken);
 
             if (disconnected)
-                Messages.Messages.SaveMessageForDevice(contactDevice.Id, new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.ClientDisconnect });
+                Messages.MessageSystem.SaveMessageForDevice(contactDevice.Id, new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.ClientDisconnect });
 
             MessageResponse resp = disconnected ? MessageResponse.OK(msg.id) : MessageResponse.Error(msg.id, NonexistentUserMessage);
             return new[] { resp };

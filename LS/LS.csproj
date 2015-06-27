@@ -181,9 +181,25 @@
     </Compile>
     <Compile Include="Handlers\ThumbnailHandler.cs" />
     <Compile Include="Models\B64.cs" />
+    <Compile Include="Models\ContactUpdate.cs" />
+    <Compile Include="Models\RequestHandling\ConnectHandler.cs" />
+    <Compile Include="Models\RequestHandling\ContactUpdatesHandler.cs" />
+    <Compile Include="Models\RequestHandling\DisconnectHandler.cs" />
+    <Compile Include="Models\RequestHandling\GcmTokenUpdateHandler.cs" />
+    <Compile Include="Models\RequestHandling\LocationHandler.cs" />
+    <Compile Include="Models\RequestHandling\Formatter.cs" />
+    <Compile Include="Models\RequestHandling\RateHandler.cs" />
+    <Compile Include="Models\RequestHandling\RegisterHandler.cs" />
+    <Compile Include="Models\RequestHandling\UpgradeHandler.cs" />
+    <Compile Include="Models\RequestHandling\CodeRefreshHandler.cs" />
+    <Compile Include="Models\RequestHandling\IClientMessageHandler.cs" />
+    <Compile Include="Models\RequestHandling\RequestHandler.cs" />
+    <Compile Include="Models\ServerMessageType.cs" />
     <Compile Include="Models\CodeGen.cs" />
     <Compile Include="Models\DB\DbRating.cs" />
     <Compile Include="Models\DB\DbLog.cs" />
+    <Compile Include="Models\Gcm.cs" />
+    <Compile Include="Models\GcmMessage.cs" />
     <Compile Include="Models\Messages\IBulkMsgProcessor.cs" />
     <Compile Include="Models\Messages\IMsgProcessorBroker.cs" />
     <Compile Include="Models\Messages\MPFactory.cs" />
@@ -195,6 +211,7 @@
     <Compile Include="Models\Messages\V2\MP_ServerConnectV2.cs" />
     <Compile Include="Models\Messages\V2\MP_UpgradeV2.cs" />
     <Compile Include="Models\Messages\V2\MsgProcessorBrokerV2.cs" />
+    <Compile Include="Models\ClientMessageType.cs" />
     <Compile Include="Models\QueuedMessageType.cs" />
     <Compile Include="Models\DB\DbDeviceMessage.cs" />
     <Compile Include="Models\DB\DbDeviceRelation.cs" />
@@ -233,6 +250,10 @@
     <Compile Include="Services\Android.svc.cs">
       <DependentUpon>Android.svc</DependentUpon>
     </Compile>
+    <Compile Include="Services\DataContracts.V2\ExchangeRequest.cs" />
+    <Compile Include="Services\DataContracts.V2\ExchangeResponse.cs" />
+    <Compile Include="Services\DataContracts.V2\ServerMessage.cs" />
+    <Compile Include="Services\DataContracts.V2\ClientMessage.cs" />
     <Compile Include="Services\DataContracts.V2\DataMessage.cs" />
     <Compile Include="Services\DataContracts.V2\DeviceLocation.cs" />
     <Compile Include="Services\DataContracts.V2\RequestData.cs" />

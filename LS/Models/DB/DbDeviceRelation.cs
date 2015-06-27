@@ -11,5 +11,6 @@ namespace MyMvc.Models.DB
         public int DeviceId { get; set; }
         public int OtherDeviceId { get; set; }
         public int GroupId { get; set; }
+        public Guid Key { get; set; }
     }
 }

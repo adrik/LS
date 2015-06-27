@@ -28,8 +28,19 @@ namespace MyMvc.Services
             int version = request.v;
             ResponseData response = new ResponseData();
 
-            var allMessages = Messages.GetSavedMessages(login).Union(request.m);
+            var allMessages = MessageSystem.GetSavedMessages(login).Union(request.m);
             MPFactory.Instance.GetMP(version).Process(login, allMessages, response);
+
+            return response;
+        }
+
+        public ExchangeResponse Exchange(ExchangeRequest request) 
+        {
+            Login login = new Login(request.i);
+            int version = request.v;
+            ExchangeResponse response = new ExchangeResponse();
+
+            MPFactory.Instance.RequestHandler.Handle(login, request.m, response);
 
             return response;
         }

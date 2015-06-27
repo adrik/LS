@@ -7,7 +7,7 @@ using MyMvc.Services.DataContracts.V2;
 
 namespace MyMvc.Models.Messages
 {
-    public static class Messages
+    public static class MessageSystem
     {
         private static object msgLock = new object();
 

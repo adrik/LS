@@ -33,13 +33,31 @@
                 $.ajax(
                 {
                     type: 'POST',
-                    url: '/Services/Android.svc/Process?id=im.adrenaline',
-                    data: '[{ "Id": -1, "Type": 0 }]',
+                    url: '/Services/Web.svc/exchange',
+                    data: '{ "i": "xxx", "v": 2, "m": [{ "t": 5 }] }',
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
                     processData: false,
                     success: function (data, status, xhr) {
-                        $('#resultCode').html(data.Answers[0].Details);
+                        $('#resultCode').html(JSON.stringify(data));
+                    },
+                    error: function (xhr, status, msg) {
+                        $('#resultCode').html(status + ': ' + msg);
+                    }
+                });
+            });
+
+            $('#SendGcm').click(function () {
+                $.ajax(
+                {
+                    type: 'POST',
+                    url: '/Test/SendGcmMessage',
+                    data: JSON.stringify({ receiver: $('#receiver').val(), message: $('#message').val() }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    processData: false,
+                    success: function (data, status, xhr) {
+                        $('#response').html(data);
                     },
                     error: function (xhr, status, msg) {
                         alert(status + ': ' + msg);
@@ -68,7 +86,10 @@
         <button id="testCode">test code</button>
         <span id="resultCode"></span>
 
-        <form action="/Test/SendGcmMessage"
+        <div>To: <input type="text" id="receiver" value="im.adrenaline@gmail.com" /></div>
+        <div>Msg: <input type="text" id="message" /></div>
+        <button id="SendGcm">Send</button>
+        <div id="response"></div>
     </div>
 </body>
 </html>

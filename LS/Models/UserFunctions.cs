@@ -110,18 +110,16 @@ namespace MyMvc.Models
         }
 
         // --- V2 ---
-        public static Tuple<DbDevice, DbLocation>[] SelelectContacts(DbDevice device)
+        public static ContactUpdate[] SelelectContacts(DbDevice device)
         {
             var db = ModelContext.Instance;
 
-            var query = (
+            return (
                 from r in db.DeviceRelations
                 join d in db.Devices on r.OtherDeviceId equals d.Id
                 from l in db.Locations.Where(x => x.DeviceId == d.Id).DefaultIfEmpty()
                 where r.DeviceId == device.Id && r.GroupId == 1
-                select new { Device = d, Location = l }).ToArray();
-
-            return query.Select(x => new Tuple<DbDevice, DbLocation>(x.Device, x.Location)).ToArray();
+                select new ContactUpdate { RelationKey = r.Key, Device = d, Location = l }).ToArray();
         }
 
         public static DbLocation[] SelectContactLocations(DbDevice device)
@@ -138,9 +136,28 @@ namespace MyMvc.Models
             return query.ToArray();
         }
 
+        public static ContactUpdate[] SelectContactUpdates(DbDevice device)
+        {
+            var db = ModelContext.Instance;
+
+            var query =
+                from r in db.DeviceRelations
+                join l in db.Locations.AsNoTracking() on r.OtherDeviceId equals l.DeviceId
+                where r.DeviceId == device.Id && r.GroupId == 1 &&
+                    (!device.LastUpdate.HasValue || l.Time > device.LastUpdate.Value)
+                select new ContactUpdate { RelationKey = r.Key, Location = l };
+
+            return query.ToArray();
+        }
+
         public static DbDevice SelectDevice(int deviceId)
         {
             return ModelContext.Instance.Devices.FirstOrDefault(x => x.Id == deviceId);
+        }
+
+        public static DbDevice SelectDevice(Guid key)
+        {
+            return ModelContext.Instance.Devices.FirstOrDefault(x => x.Key == key);
         }
 
         public static DbLocation SelectLocation(int deviceId)
@@ -266,7 +283,7 @@ namespace MyMvc.Models
             return code;
         }
 
-        public static DbDevice Register(string login, string name)
+        public static DbDevice Register(string login, string name, string gcmToken)
         {
             var db = ModelContext.Instance;
 
@@ -278,7 +295,7 @@ namespace MyMvc.Models
                 db.SaveChanges();
             }
 
-            var device = new DbDevice() { DeviceKey = string.Empty, Name = name, Code = MakeNewCode(), Status = 1, UserId = user.Id };
+            var device = new DbDevice() { DeviceKey = string.Empty, Key = Guid.NewGuid(), Name = name, Code = MakeNewCode(), Status = 1, UserId = user.Id, GcmToken = gcmToken };
             db.Devices.Add(device);
             db.SaveChanges();
 
@@ -317,8 +334,18 @@ namespace MyMvc.Models
 
         public static bool Connect(DbDevice device, string code, out DbDevice contact)
         {
+            Guid clientRelationKey;
+            Guid contactRelationKey;
+
+            return Connect(device, code, out contact, out clientRelationKey, out contactRelationKey);
+        }
+
+        public static bool Connect(DbDevice device, string code, out DbDevice contact, out Guid clientRelationKey, out Guid contactRelationKey)
+        {
             var db = ModelContext.Instance;
             contact = db.Devices.FirstOrDefault(x => x.Code == code);
+            clientRelationKey = Guid.Empty;
+            contactRelationKey = Guid.Empty;
 
             if (contact != null)
             {
@@ -327,8 +354,11 @@ namespace MyMvc.Models
 
                 if (!alreadyConnected)
                 {
-                    db.DeviceRelations.Add(new DbDeviceRelation() { DeviceId = device.Id, OtherDeviceId = contactId, GroupId = 1 });
-                    db.DeviceRelations.Add(new DbDeviceRelation() { DeviceId = contactId, OtherDeviceId = device.Id, GroupId = 1 });
+                    clientRelationKey = Guid.NewGuid();
+                    contactRelationKey = Guid.NewGuid();
+
+                    db.DeviceRelations.Add(new DbDeviceRelation() { DeviceId = device.Id, OtherDeviceId = contactId, GroupId = 1, Key = clientRelationKey });
+                    db.DeviceRelations.Add(new DbDeviceRelation() { DeviceId = contactId, OtherDeviceId = device.Id, GroupId = 1, Key = contactRelationKey });
                     db.SaveChanges();
 
                     return true;
@@ -370,26 +400,30 @@ namespace MyMvc.Models
         //    return false;
         //}
 
-        public static bool Disconnect(DbDevice device, int contactDeviceId)
+        public static bool Disconnect(DbDevice device, int contactDeviceId, out Guid contactRelationKey)
         {
             var db = ModelContext.Instance;
+            contactRelationKey = Guid.Empty;
 
-            DbDeviceRelation[] relations = (
-                from rel in db.DeviceRelations
-                where
-                    (rel.DeviceId == device.Id && rel.OtherDeviceId == contactDeviceId) ||
-                    (rel.DeviceId == contactDeviceId && rel.OtherDeviceId == device.Id)
-                select rel).ToArray();
+            var clientRelation = db.DeviceRelations.Where(r => r.DeviceId == device.Id && r.OtherDeviceId == contactDeviceId).FirstOrDefault();
+            var contactRelation = db.DeviceRelations.Where(r => r.DeviceId == contactDeviceId && r.OtherDeviceId == device.Id).FirstOrDefault();
 
-            if (relations.Length > 0)
+            if (clientRelation == null && contactRelation == null) return false;
+
+            if (clientRelation != null)
             {
-                foreach (DbDeviceRelation rel in relations)
-                    db.DeviceRelations.Remove(rel);
-                db.SaveChanges();
-
-                return true;
+                db.DeviceRelations.Remove(clientRelation);
             }
-            return false;
+
+            if (contactRelation != null)
+            {
+                contactRelationKey = contactRelation.Key;
+                db.DeviceRelations.Remove(contactRelation);
+            }
+            
+            db.SaveChanges();
+
+            return true;
         }
 
         public static DbUser CreateDevice(string login, string code)
@@ -422,6 +456,23 @@ namespace MyMvc.Models
         {
             device.GcmToken = token;
             ModelContext.Instance.SaveChanges();
+        }
+
+        public static void SetLastUpdateOnDevice(DbDevice device, DateTime updateTime)
+        {
+            device.LastUpdate = updateTime;
+            DB.ModelContext.Instance.SaveChanges();
+        }
+
+        public static DbDevice FindContact(DbDevice device, Guid relationKey)
+        {
+            var db = ModelContext.Instance;
+
+            return (
+                from r in db.DeviceRelations
+                join d in db.Devices on r.DeviceId equals d.Id
+                where r.Key == relationKey
+                select d).FirstOrDefault();
         }
     }
 }

@@ -16,5 +16,6 @@ namespace MyMvc.Models.DB
         public int Status { get; set; }
         public DateTime? LastUpdate { get; set; }
         public string GcmToken { get; set; }
+        public Guid Key { get; set; }
     }
 }

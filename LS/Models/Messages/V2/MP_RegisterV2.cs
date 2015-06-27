@@ -17,12 +17,12 @@ namespace MyMvc.Models.Messages.V2
                     device = UserFunctions.SelectAnyDevice(parts[1]);
 
                 if (device == null)
-                    device = UserFunctions.Register(parts[0], parts[1]);
+                    device = UserFunctions.Register(parts[0], parts[1], null);
             }
             response.Add(msg.Respond(device.Id.ToString()));
-            foreach (var tuple in UserFunctions.SelelectContacts(device))
+            foreach (var update in UserFunctions.SelelectContacts(device))
             {
-                string contactInfo = MsgFormatter.FormatContact(tuple.Item1, tuple.Item2);
+                string contactInfo = MsgFormatter.FormatContact(update.Device, update.Location);
                 response.Add(new DataMessage() { t = MessageType.ClientConnect, c = contactInfo });
             }
         }

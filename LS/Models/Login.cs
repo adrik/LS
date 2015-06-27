@@ -24,9 +24,15 @@ namespace MyMvc.Models
                 Device = db.Devices.FirstOrDefault(x => x.UserId == User.Id);
         }
 
+        [Obsolete]
         public Login(int deviceId)
         {
             Device = UserFunctions.SelectDevice(deviceId);
+        }
+
+        public Login(Guid key)
+        {
+            Device = UserFunctions.SelectDevice(key);
         }
     }
 }

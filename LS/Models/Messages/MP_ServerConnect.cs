@@ -14,7 +14,7 @@ namespace MyMvc.Models.Messages
                 if (UserFunctions.Connect(login.Device, msg.c, out contact))
                 {
                     DataMessage message = new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.ClientConnect };
-                    Messages.SaveMessageForDevice(contact.Id, message);
+                    MessageSystem.SaveMessageForDevice(contact.Id, message);
                 }
 
                 if (contact != null)

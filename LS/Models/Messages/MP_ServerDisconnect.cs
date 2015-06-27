@@ -13,12 +13,23 @@ namespace MyMvc.Models.Messages
                 try
                 {
                     int contactId = int.Parse(msg.c.Trim());
-                    bool disconnected = UserFunctions.Disconnect(login.Device, contactId);
+                    var contact = UserFunctions.SelectDevice(contactId);
+
+                    Guid contactRelationKey;
+                    bool disconnected = UserFunctions.Disconnect(login.Device, contactId, out contactRelationKey);
 
                     if (disconnected)
                     {
+                        if (contact.GcmToken != null)
+                        {
+                            var location = UserFunctions.SelectLocation(login.Device.Id);
+                            string info = MyMvc.Models.RequestHandling.Formatter.FormatContact(contactRelationKey, login.Device, location);
+
+                            Gcm.SendData(contact.GcmToken, new ServerMessage { t = ServerMessageType.Connected, c = info });
+                        }
+
                         DataMessage message = new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.ClientDisconnect };
-                        Messages.SaveMessageForDevice(contactId, message);
+                        MessageSystem.SaveMessageForDevice(contactId, message);
                     }
                 }
                 catch (FormatException) { }

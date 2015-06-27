@@ -63,7 +63,7 @@ namespace MyMvc.Models.MessageProcessing
 
         public static QueuedMessage[] GetUserMessages(Login login)
         {
-            DataMessage[] messages = Messages.Messages.GetSavedMessages(login);
+            DataMessage[] messages = Messages.MessageSystem.GetSavedMessages(login);
             List<QueuedMessage> result = new List<QueuedMessage>();
 
             foreach (DataMessage msg in messages)

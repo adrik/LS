@@ -17,7 +17,7 @@ namespace MyMvc.Models.MessageProcessing
             DB.DbDevice contact;
 
             if (UserFunctions.Connect(login.Device, msg.content, out contact))
-                Messages.Messages.SaveMessageForDevice(contact.Id, new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.ClientConnect });
+                Messages.MessageSystem.SaveMessageForDevice(contact.Id, new DataMessage() { c = login.Device.Id.ToString(), t = MessageType.ClientConnect });
 
             if (contact == null)
                 return new[] { MessageResponse.Error(msg.id, NonexistentUserMessage) };

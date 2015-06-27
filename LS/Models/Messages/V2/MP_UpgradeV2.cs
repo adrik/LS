@@ -18,9 +18,9 @@ namespace MyMvc.Models.Messages.V2
 
                 response.Add(new DataMessage() { t = MessageType.Register, c = device.Id.ToString() });
                 response.Add(new DataMessage() { t = MessageType.Code, c = device.Code });
-                foreach (var tuple in UserFunctions.SelelectContacts(device))
+                foreach (var contact in UserFunctions.SelelectContacts(device))
                 {
-                    string contactInfo = MsgFormatter.FormatContact(tuple.Item1, tuple.Item2);
+                    string contactInfo = MsgFormatter.FormatContact(contact.Device, contact.Location);
                     response.Add(new DataMessage() { t = MessageType.ClientConnect, c = contactInfo });
                 }
             }
